@@ -1,0 +1,76 @@
+/* App tabs */
+"Home" = "首页";
+"History" = "记录";
+"Settings" = "设置";
+
+/* Light conditions */
+"晴天" = "晴天";
+"多云" = "多云";
+"阴天" = "阴天";
+"夜间" = "夜间";
+"室内" = "室内";
+
+/* Scene modes */
+"运动" = "运动";
+"人像" = "人像";
+"风景" = "风景";
+"微距" = "微距";
+"夜景" = "夜景";
+
+/* Metering modes */
+"评价测光" = "评价测光";
+"中央重点" = "中央重点";
+"点测光" = "点测光";
+
+/* Parameter labels */
+"Light Condition" = "光线条件";
+"ISO" = "ISO感光度";
+"Scene Mode" = "场景模式";
+"Aperture" = "光圈";
+"Shutter" = "快门";
+"Shutter Speed" = "快门速度";
+"Metering" = "测光";
+"Metering Mode" = "测光模式";
+"Exp. Comp." = "曝光补偿";
+"Exp. Compensation" = "曝光补偿";
+
+/* Buttons */
+"Reset" = "重置";
+"Save" = "保存";
+"Cancel" = "取消";
+"Done" = "完成";
+"Delete" = "删除";
+"Rename" = "重命名";
+
+/* Settings */
+"Appearance" = "外观";
+"Theme" = "主题";
+"System Default" = "系统默认";
+"Light" = "浅色";
+"Dark" = "深色";
+"Language" = "语言";
+"App Language" = "应用语言";
+"Language changes will take effect when you restart the app" = "语言更改将在重启应用后生效";
+"About" = "关于";
+"About ShotSmarts" = "关于大师指南";
+"Version" = "版本";
+"Reset All Settings" = "重置所有设置";
+"Reset Settings" = "重置设置";
+"This will reset all app settings to their default values. This action cannot be undone." = "这将把所有应用设置重置为默认值。此操作无法撤销。";
+
+/* Parameter history */
+"Parameter History" = "参数记录";
+"No Saved Parameters" = "没有保存的参数";
+"Your saved shooting parameters will appear here" = "您保存的拍摄参数将显示在这里";
+"Shot" = "拍摄";
+"Save Parameters" = "保存参数";
+"Parameter Name" = "参数名称";
+"Enter a name for these parameters" = "为这组参数输入名称";
+"Rename Parameter" = "重命名参数";
+"New name" = "新名称";
+"Enter a new name for this parameter" = "为此参数输入新名称";
+"Search by name" = "按名称搜索";
+
+/* About */
+"ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario." = "大师指南帮助各级摄影师计算任何拍摄场景的最佳相机设置。";
+"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "只需输入您的拍摄条件，即可让大师指南推荐理想的光圈、快门速度和其他设置，以完成完美的拍摄。"; 

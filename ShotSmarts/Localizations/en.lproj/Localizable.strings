@@ -1,0 +1,76 @@
+/* App tabs */
+"Home" = "Home";
+"History" = "History";
+"Settings" = "Settings";
+
+/* Light conditions */
+"晴天" = "Sunny";
+"多云" = "Cloudy";
+"阴天" = "Overcast";
+"夜间" = "Night";
+"室内" = "Indoor";
+
+/* Scene modes */
+"运动" = "Sports";
+"人像" = "Portrait";
+"风景" = "Landscape";
+"微距" = "Macro";
+"夜景" = "Night";
+
+/* Metering modes */
+"评价测光" = "Evaluative";
+"中央重点" = "Center-weighted";
+"点测光" = "Spot";
+
+/* Parameter labels */
+"Light Condition" = "Light Condition";
+"ISO" = "ISO";
+"Scene Mode" = "Scene Mode";
+"Aperture" = "Aperture";
+"Shutter" = "Shutter";
+"Shutter Speed" = "Shutter Speed";
+"Metering" = "Metering";
+"Metering Mode" = "Metering Mode";
+"Exp. Comp." = "Exp. Comp.";
+"Exp. Compensation" = "Exp. Compensation";
+
+/* Buttons */
+"Reset" = "Reset";
+"Save" = "Save";
+"Cancel" = "Cancel";
+"Done" = "Done";
+"Delete" = "Delete";
+"Rename" = "Rename";
+
+/* Settings */
+"Appearance" = "Appearance";
+"Theme" = "Theme";
+"System Default" = "System Default";
+"Light" = "Light";
+"Dark" = "Dark";
+"Language" = "Language";
+"App Language" = "App Language";
+"Language changes will take effect when you restart the app" = "Language changes will take effect when you restart the app";
+"About" = "About";
+"About ShotSmarts" = "About ShotSmarts";
+"Version" = "Version";
+"Reset All Settings" = "Reset All Settings";
+"Reset Settings" = "Reset Settings";
+"This will reset all app settings to their default values. This action cannot be undone." = "This will reset all app settings to their default values. This action cannot be undone.";
+
+/* Parameter history */
+"Parameter History" = "Parameter History";
+"No Saved Parameters" = "No Saved Parameters";
+"Your saved shooting parameters will appear here" = "Your saved shooting parameters will appear here";
+"Shot" = "Shot";
+"Save Parameters" = "Save Parameters";
+"Parameter Name" = "Parameter Name";
+"Enter a name for these parameters" = "Enter a name for these parameters";
+"Rename Parameter" = "Rename Parameter";
+"New name" = "New name";
+"Enter a new name for this parameter" = "Enter a new name for this parameter";
+"Search by name" = "Search by name";
+
+/* About */
+"ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario." = "ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario.";
+"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot."; 

@@ -1,0 +1,76 @@
+/* App tabs */
+"Home" = "ホーム";
+"History" = "履歴";
+"Settings" = "設定";
+
+/* Light conditions */
+"晴天" = "晴れ";
+"多云" = "曇り";
+"阴天" = "どんより";
+"夜间" = "夜間";
+"室内" = "室内";
+
+/* Scene modes */
+"运动" = "スポーツ";
+"人像" = "ポートレート";
+"风景" = "風景";
+"微距" = "マクロ";
+"夜景" = "夜景";
+
+/* Metering modes */
+"评价测光" = "評価測光";
+"中央重点" = "中央重点";
+"点测光" = "スポット測光";
+
+/* Parameter labels */
+"Light Condition" = "光の条件";
+"ISO" = "ISO感度";
+"Scene Mode" = "シーンモード";
+"Aperture" = "絞り値";
+"Shutter" = "シャッター";
+"Shutter Speed" = "シャッタースピード";
+"Metering" = "測光";
+"Metering Mode" = "測光モード";
+"Exp. Comp." = "露出補正";
+"Exp. Compensation" = "露出補正";
+
+/* Buttons */
+"Reset" = "リセット";
+"Save" = "保存";
+"Cancel" = "キャンセル";
+"Done" = "完了";
+"Delete" = "削除";
+"Rename" = "名前変更";
+
+/* Settings */
+"Appearance" = "外観";
+"Theme" = "テーマ";
+"System Default" = "システム設定";
+"Light" = "ライト";
+"Dark" = "ダーク";
+"Language" = "言語";
+"App Language" = "アプリの言語";
+"Language changes will take effect when you restart the app" = "言語の変更はアプリを再起動すると反映されます";
+"About" = "情報";
+"About ShotSmarts" = "ShootSmartsについて";
+"Version" = "バージョン";
+"Reset All Settings" = "すべての設定をリセット";
+"Reset Settings" = "設定のリセット";
+"This will reset all app settings to their default values. This action cannot be undone." = "これによりすべてのアプリ設定がデフォルト値にリセットされます。この操作は元に戻せません。";
+
+/* Parameter history */
+"Parameter History" = "パラメータ履歴";
+"No Saved Parameters" = "保存されたパラメータがありません";
+"Your saved shooting parameters will appear here" = "保存した撮影パラメータがここに表示されます";
+"Shot" = "ショット";
+"Save Parameters" = "パラメータを保存";
+"Parameter Name" = "パラメータ名";
+"Enter a name for these parameters" = "これらのパラメータの名前を入力してください";
+"Rename Parameter" = "パラメータ名の変更";
+"New name" = "新しい名前";
+"Enter a new name for this parameter" = "このパラメータの新しい名前を入力してください";
+"Search by name" = "名前で検索";
+
+/* About */
+"ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario." = "ShootSmartsは、あらゆるレベルの写真家がどんな撮影シナリオでも最適なカメラ設定を計算できるようサポートします。";
+"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "撮影条件を入力するだけで、ShootSmartsが完璧なショットのための理想的な絞り値、シャッタースピード、その他の設定を推奨します。"; 
