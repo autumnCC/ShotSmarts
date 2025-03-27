@@ -28,23 +28,23 @@ struct HistoryView: View {
         NavigationView {
             ZStack {
                 // 背景颜色 - Background color
-                Color(UIColor.systemGroupedBackground)
+                Color.white
                     .edgesIgnoringSafeArea(.all)
                 
-                VStack {
+                VStack(spacing: 16) {
                     if historyManager.savedParameters.isEmpty {
                         // 空状态视图 - Empty state view
-                        VStack(spacing: 20) {
+                        VStack(spacing: 24) {
                             Image(systemName: "photo.stack")
                                 .font(.system(size: 60))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(hex: "#FF7648"))
                             
-                            Text(LocalizedString("没有保存的参数", comment: "No saved parameters"))
-                                .font(.title2)
-                                .foregroundColor(.gray)
+                            Text("没有保存的参数")
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.black)
                             
-                            Text(LocalizedString("您保存的拍摄参数将显示在这里", comment: "Saved parameters explanation"))
-                                .font(.body)
+                            Text("您保存的拍摄参数将显示在这里")
+                                .font(.system(size: 16))
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal)
@@ -54,29 +54,40 @@ struct HistoryView: View {
                         // 搜索栏 - Search bar
                         HStack {
                             Image(systemName: "magnifyingglass")
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.gray)
                             
-                            TextField(LocalizedString("搜索参数名称", comment: "Search prompt"), text: $searchText)
-                                .foregroundColor(.primary)
+                            TextField("搜索参数名称", text: $searchText)
+                                .font(.system(size: 16))
+                                .foregroundColor(.black)
                             
                             if !searchText.isEmpty {
                                 Button(action: {
                                     searchText = ""
                                 }) {
                                     Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.gray)
                                 }
                             }
                         }
-                        .padding(10)
-                        .background(Color(UIColor.secondarySystemBackground))
-                        .cornerRadius(10)
+                        .padding(12)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(12)
                         .padding(.horizontal)
-                        .padding(.vertical, 8)
+                        .padding(.top, 8)
                         
                         // 参数列表 - Parameter list
                         ScrollView {
-                            LazyVStack(spacing: 12) {
+                            // 排序提示信息 - Sorting info
+                            if !historyManager.savedParameters.isEmpty {
+                                Text("按时间排序，最新保存的参数显示在最前面")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.gray)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal)
+                                    .padding(.bottom, 4)
+                            }
+                            
+                            LazyVStack(spacing: 16) {
                                 ForEach(filteredParameters) { parameter in
                                     NavigationLink(destination: ParameterDetailView(parameter: parameter)
                                         .environmentObject(historyManager)) {
@@ -85,22 +96,20 @@ struct HistoryView: View {
                                     }
                                     .buttonStyle(PlainButtonStyle())
                                     .contextMenu {
-                                        // 重命名按钮 - Rename button
                                         Button {
                                             selectedParameter = parameter
                                             newName = parameter.name
                                             showingEditNameAlert = true
                                         } label: {
-                                            Label(LocalizedString("重命名", comment: "Rename"), systemImage: "pencil")
+                                            Label("重命名", systemImage: "pencil")
                                         }
                                         
-                                        // 删除按钮 - Delete button
                                         Button(role: .destructive) {
                                             if let index = historyManager.savedParameters.firstIndex(where: { $0.id == parameter.id }) {
                                                 historyManager.deleteParameter(at: IndexSet(integer: index))
                                             }
                                         } label: {
-                                            Label(LocalizedString("删除", comment: "Delete"), systemImage: "trash")
+                                            Label("删除", systemImage: "trash")
                                         }
                                     }
                                     .padding(.horizontal)
@@ -117,29 +126,28 @@ struct HistoryView: View {
                     }
                 }
             }
-            .navigationTitle(LocalizedString("参数记录", comment: "Parameter history title"))
-            .alert(LocalizedString("重命名参数", comment: "Rename parameter alert title"), isPresented: $showingEditNameAlert) {
-                TextField(LocalizedString("新名称", comment: "New name field"), text: $newName)
+            .navigationTitle("参数记录")
+            .navigationBarTitleDisplayMode(.large)
+            .alert("重命名参数", isPresented: $showingEditNameAlert) {
+                TextField("新名称", text: $newName)
+                    .font(.system(size: 16))
                 
-                Button(LocalizedString("取消", comment: "Cancel button"), role: .cancel) {
+                Button("取消", role: .cancel) {
                     newName = ""
                 }
                 
-                Button(LocalizedString("保存", comment: "Save button")) {
+                Button("保存") {
                     if let parameter = selectedParameter, !newName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         historyManager.renameParameter(parameter, to: newName)
                         newName = ""
                     }
                 }
             } message: {
-                Text(LocalizedString("为此参数设置新名称", comment: "Rename parameter message"))
+                Text("为此参数设置新名称")
             }
         }
-        .onChange(of: settings.refreshCounter) { _ in
-            // 响应语言变化但不重建整个视图
-        }
+        .accentColor(Color(hex: "#FF7648"))
         .onAppear {
-            // 进入动画效果
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 animateCards = true
             }
@@ -152,87 +160,102 @@ struct ParameterListItem: View {
     var parameter: ShootingParameters
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 16) {
             // 标题和日期行 - Title and date row
             HStack {
                 // 场景图标 - Scene icon
-                SceneIconView(sceneMode: parameter.sceneMode)
-                    .frame(width: 32, height: 32)
+                ZStack {
+                    Circle()
+                        .fill(Color(hex: "#FF7648").opacity(0.1))
+                        .frame(width: 40, height: 40)
+                    
+                    Image(systemName: getSceneModeIcon(parameter.sceneMode))
+                        .font(.system(size: 20))
+                        .foregroundColor(Color(hex: "#FF7648"))
+                }
                 
-                VStack(alignment: .leading, spacing: 2) {
-            // 参数名称 - Parameter name
-            Text(parameter.name)
-                .font(.headline)
-                        .foregroundColor(.primary)
-            
-            // 日期 - Date
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(parameter.name)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(.black)
+                    
                     Text(dateFormatter.string(from: parameter.date))
-                .font(.caption)
-                .foregroundColor(.secondary)
+                        .font(.system(size: 14))
+                        .foregroundColor(.gray)
                 }
                 
                 Spacer()
                 
                 // 光线条件图标 - Light condition icon
-                LightConditionIcon(lightCondition: parameter.lightCondition)
-                    .frame(width: 28, height: 28)
+                ZStack {
+                    Circle()
+                        .fill(Color(hex: "#FF7648").opacity(0.1))
+                        .frame(width: 36, height: 36)
+                    
+                    Image(systemName: getLightConditionIcon(parameter.lightCondition))
+                        .font(.system(size: 16))
+                        .foregroundColor(Color(hex: "#FF7648"))
+                }
             }
             
             Divider()
             
-            // 参数指示器 - Parameter indicators
-            HStack(spacing: 0) {
-                // 主要参数 - Primary parameters
-                HStack(spacing: 0) {
-                    CompactParameterIndicator(
-                        label: LocalizedString("光圈", comment: "Aperture"),
-                        value: parameter.formattedAperture,
-                        icon: "camera.aperture",
-                        color: .blue
-                    )
-                    
-                    CompactParameterIndicator(
-                        label: LocalizedString("快门", comment: "Shutter"),
-                        value: parameter.formattedShutterSpeed,
-                        icon: "timer",
-                        color: .orange
-                    )
-                    
-                    CompactParameterIndicator(
+            // 参数网格 - Parameter grid (4 columns in one row)
+            HStack(spacing: 4) {
+                // 光圈 - Aperture
+                CompactParameterIndicator(
+                    label: "光圈",
+                    value: parameter.formattedAperture,
+                    icon: "camera.aperture"
+                )
+                
+                // 快门 - Shutter
+                CompactParameterIndicator(
+                    label: "快门",
+                    value: parameter.formattedShutterSpeed,
+                    icon: "timer"
+                )
+                
+                // ISO
+                CompactParameterIndicator(
                     label: "ISO",
-                        value: "\(Int(parameter.iso))",
-                        icon: "camera.metering.center.weighted",
-                        color: .green
-                    )
-                    
-                    CompactParameterIndicator(
-                        label: LocalizedString("测光", comment: "Metering"),
-                        value: shortMeteringName(for: parameter.meteringMode),
-                        icon: "viewfinder",
-                        color: .purple
-                    )
-                    
-                    CompactParameterIndicator(
-                        label: LocalizedString("曝光", comment: "Exposure"),
-                        value: shortExposureValue(parameter.formattedExposureCompensation),
-                        icon: "plusminus",
-                        color: .pink
-                    )
-                }
+                    value: "\(Int(parameter.iso))",
+                    icon: "camera.metering.center.weighted"
+                )
+                
+                // 曝光 - Exposure
+                CompactParameterIndicator(
+                    label: "曝光",
+                    value: shortExposureValue(parameter.formattedExposureCompensation),
+                    icon: "plusminus"
+                )
             }
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 4)
-        .background(Color(UIColor.secondarySystemBackground).opacity(0.5))
-        .cornerRadius(12)
+        .padding(16)
+        .background(Color.white)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2)
     }
     
-    // 短格式的测光模式名称 - Short metering mode name
-    private func shortMeteringName(for mode: ShootingParameters.MeteringMode) -> String {
+    // 获取场景模式图标 - Get scene mode icon
+    private func getSceneModeIcon(_ mode: ShootingParameters.SceneMode) -> String {
         switch mode {
-        case .evaluative: return "评价"
-        case .centerWeighted: return "中央"
-        case .spot: return "点测"
+        case .sport: return "figure.run"
+        case .portrait: return "person.fill"
+        case .landscape: return "mountain.2.fill"
+        case .macro: return "flower"
+        case .night: return "moon.stars.fill"
+        }
+    }
+    
+    // 获取光线条件图标 - Get light condition icon
+    private func getLightConditionIcon(_ condition: ShootingParameters.LightCondition) -> String {
+        switch condition {
+        case .sunny: return "sun.max.fill"
+        case .cloudy: return "cloud.sun.fill"
+        case .overcast: return "cloud.fill"
+        case .night: return "moon.fill"
+        case .indoor: return "house.fill"
         }
     }
     
@@ -255,75 +278,29 @@ struct CompactParameterIndicator: View {
     var label: String
     var value: String
     var icon: String
-    var color: Color
     
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 3) {
             Image(systemName: icon)
-                .font(.system(size: 12))
-                .foregroundColor(color)
+                .font(.system(size: 14))
+                .foregroundColor(Color(hex: "#FF7648"))
+                .frame(height: 16)
             
             Text(value)
                 .font(.system(size: 12, weight: .semibold))
-                .foregroundColor(.primary)
+                .foregroundColor(.black)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
             
             Text(label)
                 .font(.system(size: 10))
-                .foregroundColor(.secondary)
+                .foregroundColor(.gray)
+                .lineLimit(1)
         }
         .frame(maxWidth: .infinity)
-    }
-}
-
-// 场景图标视图 - Scene Icon View
-struct SceneIconView: View {
-    var sceneMode: ShootingParameters.SceneMode
-    
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color.blue.opacity(0.2))
-            
-            Image(systemName: iconName)
-                .font(.system(size: 18))
-                .foregroundColor(.blue)
-        }
-    }
-    
-    private var iconName: String {
-        switch sceneMode {
-        case .sport: return "figure.run"
-        case .portrait: return "person.fill"
-        case .landscape: return "mountain.2.fill"
-        case .macro: return "flower"
-        case .night: return "moon.stars.fill"
-        }
-    }
-}
-
-// 光线条件图标 - Light Condition Icon
-struct LightConditionIcon: View {
-    var lightCondition: ShootingParameters.LightCondition
-    
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(Color.orange.opacity(0.2))
-            
-            Image(systemName: iconName)
-                .font(.system(size: 14))
-                .foregroundColor(.orange)
-        }
-    }
-    
-    private var iconName: String {
-        switch lightCondition {
-        case .sunny: return "sun.max.fill"
-        case .cloudy: return "cloud.sun.fill"
-        case .overcast: return "cloud.fill"
-        case .night: return "moon.fill"
-        case .indoor: return "house.fill"
-        }
+        .padding(.vertical, 6)
+        .background(Color(.systemGray6))
+        .cornerRadius(8)
     }
 }
 
@@ -347,197 +324,141 @@ struct ParameterDetailView: View {
     // 应用设置 - App settings
     @ObservedObject var settings = AppSettings.shared
     
+    // 主题色 - Theme color
+    let themeColor = Color(hex: "#FF7648") // 统一使用橙色
+    
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
                 // 名称和日期部分 - Name and date section
                 VStack(spacing: 8) {
                     Text(displayedParameter?.name ?? parameter.name)
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(.primary)
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.black)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                     
                     Text(formatDate(displayedParameter?.date ?? parameter.date))
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
+                        .font(.system(size: 16))
+                        .foregroundColor(.gray)
                 }
-                .padding(.top, 20)
+                .padding(.top, 16)
                 
-                // 基本信息卡片 - Basic Info Card
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "info.circle.fill")
-                            .font(.system(size: 18))
-                            .foregroundColor(.white)
-                            .frame(width: 36, height: 36)
-                            .background(Color.blue)
-                            .clipShape(Circle())
-                        
-                        Text(LocalizedString("基本信息", comment: "Basic Info"))
-                            .font(.system(size: 18, weight: .semibold))
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal)
+                // 相机参数卡片网格 - Camera Parameters Grid
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("相机参数")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
                     
-                    // 基本参数网格 - Basic Parameters Grid
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                        // 光线条件卡片 - Light Condition card
-                        DetailParameterCard(
-                            icon: getLightConditionIcon(displayedParameter?.lightCondition ?? parameter.lightCondition),
-                            title: LocalizedString("光线条件", comment: "Light Condition"),
-                            value: LocalizedString(displayedParameter?.lightCondition.rawValue ?? parameter.lightCondition.rawValue, comment: "Light condition value"),
-                            color: .orange
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                        // 光圈卡片 - Aperture card
+                        CameraParameterCard(
+                            icon: "camera.aperture",
+                            title: "光圈",
+                            value: displayedParameter?.formattedAperture ?? parameter.formattedAperture,
+                            color: themeColor
                         )
                         
-                        // 场景模式卡片 - Scene Mode card
-                        DetailParameterCard(
-                            icon: getSceneModeIcon(displayedParameter?.sceneMode ?? parameter.sceneMode),
-                            title: LocalizedString("场景模式", comment: "Scene Mode"),
-                            value: LocalizedString(displayedParameter?.sceneMode.rawValue ?? parameter.sceneMode.rawValue, comment: "Scene mode value"),
-                            color: .blue
+                        // 快门卡片 - Shutter card
+                        CameraParameterCard(
+                            icon: "timer",
+                            title: "快门",
+                            value: displayedParameter?.formattedShutterSpeed ?? parameter.formattedShutterSpeed,
+                            color: themeColor
                         )
                         
-                        // ISO感光度卡片 - ISO card
-                        DetailParameterCard(
+                        // ISO卡片 - ISO card
+                        CameraParameterCard(
                             icon: "camera.metering.center.weighted",
                             title: "ISO",
                             value: "\(Int(displayedParameter?.iso ?? parameter.iso))",
-                            color: .green
+                            color: themeColor
                         )
                         
-                        // 测光模式卡片 - Metering Mode card
-                        DetailParameterCard(
-                            icon: "viewfinder",
-                            title: LocalizedString("测光模式", comment: "Metering Mode"),
-                            value: LocalizedString(displayedParameter?.meteringMode.rawValue ?? parameter.meteringMode.rawValue, comment: "Metering mode value"),
-                            color: .purple
+                        // 曝光补偿卡片 - Exposure card
+                        CameraParameterCard(
+                            icon: "plusminus",
+                            title: "曝光",
+                            value: displayedParameter?.formattedExposureCompensation ?? parameter.formattedExposureCompensation,
+                            color: themeColor
                         )
                     }
-                    .padding(.horizontal)
                 }
+                .padding(.horizontal)
                 
                 Divider()
                     .padding(.horizontal)
                 
-                // 相机参数部分 - Camera Parameters Section
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "camera.fill")
-                            .font(.system(size: 18))
-                            .foregroundColor(.white)
-                            .frame(width: 36, height: 36)
-                            .background(Color.indigo)
-                            .clipShape(Circle())
-                        
-                        Text(LocalizedString("相机参数", comment: "Camera Parameters"))
-                            .font(.system(size: 18, weight: .semibold))
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    
-                    // 核心参数 - Core Parameters
-                    VStack(spacing: 16) {
-                        // 光圈参数行 - Aperture parameter row
-                        CoreParameterRow(
-                            icon: "camera.aperture",
-                            title: LocalizedString("光圈", comment: "Aperture"),
-                            value: displayedParameter?.formattedAperture ?? parameter.formattedAperture,
-                            description: LocalizedString("控制进入镜头的光量和景深", comment: "Aperture description"),
-                            color: .blue
-                        )
-                        
-                        // 快门速度参数行 - Shutter Speed parameter row
-                        CoreParameterRow(
-                            icon: "timer",
-                            title: LocalizedString("快门速度", comment: "Shutter Speed"),
-                            value: displayedParameter?.formattedShutterSpeed ?? parameter.formattedShutterSpeed,
-                            description: LocalizedString("控制曝光时间和动态拍摄", comment: "Shutter speed description"),
-                            color: .orange
-                        )
-                        
-                        // 曝光补偿参数行 - Exposure Compensation parameter row
-                        CoreParameterRow(
-                            icon: "plusminus",
-                            title: LocalizedString("曝光补偿", comment: "Exposure Compensation"),
-                            value: displayedParameter?.formattedExposureCompensation ?? parameter.formattedExposureCompensation,
-                            description: LocalizedString("调整最终成像的亮度", comment: "Exposure compensation description"),
-                            color: .pink
-                        )
-                    }
-                    .padding(.horizontal)
-                }
-                
-                // 笔记区域 - Notes area
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "note.text")
-                            .font(.system(size: 18))
-                            .foregroundColor(.white)
-                            .frame(width: 36, height: 36)
-                            .background(Color.gray)
-                            .clipShape(Circle())
-                        
-                        Text(LocalizedString("笔记", comment: "Notes"))
-                            .font(.system(size: 18, weight: .semibold))
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    
-                    // 笔记内容文本 - Notes content text
-                    Text(displayedParameter?.notes.isEmpty ?? true ? LocalizedString("暂无笔记内容", comment: "No notes") : (displayedParameter?.notes ?? parameter.notes))
-                        .font(.system(size: 16))
-                        .foregroundColor((displayedParameter?.notes.isEmpty ?? true) ? .secondary : .primary)
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(colorScheme == .dark ? Color(hex: "#3a3a3a") : Color(hex: "#f5f5f7"))
-                        )
+                // 拍摄条件部分 - Shooting Conditions Section
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("拍摄条件")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.black)
                         .padding(.horizontal)
+                    
+                    VStack(spacing: 8) {
+                        // 光线条件行 - Light Condition row
+                        InfoRow(
+                            icon: getLightConditionIcon(displayedParameter?.lightCondition ?? parameter.lightCondition),
+                            title: "光线条件",
+                            value: LocalizedString(displayedParameter?.lightCondition.rawValue ?? parameter.lightCondition.rawValue, comment: "Light condition value"),
+                            color: themeColor
+                        )
+                        
+                        Divider()
+                            .padding(.leading, 56)
+                        
+                        // 场景模式行 - Scene Mode row
+                        InfoRow(
+                            icon: getSceneModeIcon(displayedParameter?.sceneMode ?? parameter.sceneMode),
+                            title: "场景模式",
+                            value: LocalizedString(displayedParameter?.sceneMode.rawValue ?? parameter.sceneMode.rawValue, comment: "Scene mode value"),
+                            color: themeColor
+                        )
+                        
+                        Divider()
+                            .padding(.leading, 56)
+                        
+                        // 测光模式行 - Metering Mode row
+                        InfoRow(
+                            icon: "viewfinder",
+                            title: "测光模式",
+                            value: LocalizedString(displayedParameter?.meteringMode.rawValue ?? parameter.meteringMode.rawValue, comment: "Metering mode value"),
+                            color: themeColor
+                        )
+                    }
+                    .background(Color.white)
+                    .cornerRadius(12)
+                    .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 2)
+                    .padding(.horizontal)
                 }
-                .padding(.top, 8)
-                .hidden() // 暂时隐藏笔记内容模块 - Temporarily hide notes module
                 
                 // 参数总结部分 - Parameters Summary section
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        Image(systemName: "doc.text.fill")
-                            .font(.system(size: 18))
-                            .foregroundColor(.white)
-                            .frame(width: 36, height: 36)
-                            .background(Color.green)
-                            .clipShape(Circle())
-                        
-                        Text(LocalizedString("参数总结", comment: "Parameters Summary"))
-                            .font(.system(size: 18, weight: .semibold))
-                        
-                        Spacer()
-                    }
-                    .padding(.horizontal)
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("参数总结")
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
                     
                     // 参数总结文本 - Parameter summary text
                     Text(generateParameterSummary())
                         .font(.system(size: 16))
-                        .foregroundColor(.primary)
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(colorScheme == .dark ? Color(hex: "#3a3a3a") : Color(hex: "#f5f5f7"))
-                        )
+                        .foregroundColor(.black)
+                        .lineSpacing(6)
+                        .padding(20)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(12)
                         .padding(.horizontal)
                 }
                 .padding(.top, 8)
                 
-                Spacer(minLength: 40) // 底部间距
+                Spacer(minLength: 30) // 底部间距
             }
-            .padding(.bottom, 20)
+            .padding(.bottom, 24)
         }
-        .navigationTitle(LocalizedString("参数详情", comment: "Parameter details")) // 导航栏标题
+        .background(Color.white) // 白色背景
+        .navigationTitle("参数详情") // 导航栏标题
         .navigationBarTitleDisplayMode(.inline) // 导航栏标题显示模式
         .toolbar {
             // 编辑按钮 - Edit button
@@ -548,22 +469,22 @@ struct ParameterDetailView: View {
                     showingEditAlert = true
                 }) {
                     Image(systemName: "pencil")
-                        .foregroundColor(.primary)
+                        .foregroundColor(themeColor) // 使用主题色
                 }
             }
         }
         // 重命名参数弹窗 - Rename parameter alert
-        .alert(LocalizedString("重命名参数", comment: "Rename parameter"), isPresented: $showingEditAlert) {
+        .alert("重命名参数", isPresented: $showingEditAlert) {
             // 名称输入框 - Name input field
-            TextField(LocalizedString("新名称", comment: "New name field"), text: $newName)
+            TextField("新名称", text: $newName)
             
             // 取消按钮 - Cancel button
-            Button(LocalizedString("取消", comment: "Cancel button"), role: .cancel) {
+            Button("取消", role: .cancel) {
                 newName = ""
             }
             
             // 保存按钮 - Save button
-            Button(LocalizedString("保存", comment: "Save button")) {
+            Button("保存") {
                 // 检查新名称是否有效 - Check if new name is valid
                 if !newName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     // 修改参数名称和更新状态 - Modify parameter name and update states
@@ -571,7 +492,7 @@ struct ParameterDetailView: View {
                 }
             }
         } message: {
-            Text(LocalizedString("为此参数设置新名称", comment: "Rename parameter message"))
+            Text("为此参数设置新名称")
         }
         .onAppear {
             // 视图出现时加载参数 - Load parameter when view appears
@@ -580,9 +501,6 @@ struct ParameterDetailView: View {
         .onChange(of: parameter) { newValue in
             // 当参数更改时更新显示内容 - Update displayed content when parameter changes
             self.displayedParameter = newValue
-        }
-        .onChange(of: settings.refreshCounter) { _ in
-            // 响应语言变化但不重建整个视图 - Respond to language changes without rebuilding the entire view
         }
     }
     
@@ -671,85 +589,70 @@ struct ParameterDetailView: View {
     }
 }
 
-// 详情参数卡片 - Detail Parameter Card
-struct DetailParameterCard: View {
+// 相机参数卡片 - Camera Parameter Card
+struct CameraParameterCard: View {
     var icon: String
     var title: String
     var value: String
     var color: Color
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: icon)
-                    .font(.system(size: 16))
-                    .foregroundColor(.white)
-                    .frame(width: 32, height: 32)
-                    .background(color)
-                    .clipShape(Circle())
-                
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                    
-                    Text(value)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.primary)
-                }
-                
-                Spacer()
-            }
+        VStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 24))
+                .foregroundColor(color)
+                .frame(height: 28)
+            
+            Text(value)
+                .font(.system(size: 22, weight: .bold))
+                .foregroundColor(.black)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+            
+            Text(title)
+                .font(.system(size: 14))
+                .foregroundColor(.gray)
         }
-        .padding(12)
-        .background(Color(UIColor.secondarySystemBackground))
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 16)
+        .background(color.opacity(0.1))
         .cornerRadius(12)
     }
 }
 
-// 核心参数行 - Core Parameter Row
-struct CoreParameterRow: View {
+// 信息行 - Info Row
+struct InfoRow: View {
     var icon: String
     var title: String
     var value: String
-    var description: String
     var color: Color
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
-                // 图标 - Icon
+        HStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.1))
+                    .frame(width: 40, height: 40)
+                
                 Image(systemName: icon)
-                    .font(.system(size: 18))
-                    .foregroundColor(.white)
-                    .frame(width: 36, height: 36)
-                    .background(color)
-                    .clipShape(Circle())
-                
-                // 标题和值 - Title and value
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.primary)
-                    
-                    Text(description)
-                        .font(.system(size: 12))
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-                }
-                
-                Spacer()
-                
-                // 参数值 - Parameter value
-                Text(value)
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.system(size: 20))
                     .foregroundColor(color)
-                    .padding(.trailing, 4)
             }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 14))
+                    .foregroundColor(.gray)
+                
+                Text(value)
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.black)
+            }
+            
+            Spacer()
         }
-        .padding(16)
-        .background(Color(UIColor.secondarySystemBackground))
-        .cornerRadius(12)
+        .padding(.horizontal)
+        .padding(.vertical, 8)
     }
 }
 

@@ -15,6 +15,7 @@ struct MainTabView: View {
             HomeView()
                 .tabItem {
                     Label("首页", systemImage: "camera")
+                        .font(.system(size: 12)) // 增加字体大小
                 }
                 .tag(0)
             
@@ -22,6 +23,7 @@ struct MainTabView: View {
             HistoryView()
                 .tabItem {
                     Label("记录", systemImage: "list.bullet")
+                        .font(.system(size: 12)) // 增加字体大小
                 }
                 .tag(1)
             
@@ -29,12 +31,13 @@ struct MainTabView: View {
             SettingsView()
                 .tabItem {
                     Label("设置", systemImage: "gear")
+                        .font(.system(size: 12)) // 增加字体大小
                 }
                 .tag(2)
         }
+        .accentColor(Color(hex: "#FF7648")) // 橙色
         .environmentObject(historyManager)
-        .preferredColorScheme(settings.theme.colorScheme)
-        .environment(\.refreshLanguage, settings.refreshCounter)
+        .preferredColorScheme(.light) // 固定使用浅色模式以匹配设计
     }
 }
 

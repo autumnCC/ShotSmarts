@@ -24,11 +24,11 @@ class ParameterHistoryManager: ObservableObject {
             dateFormatter.dateStyle = .short
             dateFormatter.timeStyle = .short
             
-            parameterToSave.name = "\(LocalizedString("Shot", comment: "Shot")) \(dateFormatter.string(from: Date()))"
+            parameterToSave.name = "拍摄 \(dateFormatter.string(from: Date()))"
         }
         
-        // 添加参数到列表 - Add parameter to list
-        savedParameters.append(parameterToSave)
+        // 添加参数到列表开头 - Add parameter to the beginning of the list
+        savedParameters.insert(parameterToSave, at: 0)
         saveToFile()
     }
     
@@ -75,6 +75,9 @@ class ParameterHistoryManager: ObservableObject {
             let data = try Data(contentsOf: savePath)
             let decoder = JSONDecoder()
             savedParameters = try decoder.decode([ShootingParameters].self, from: data)
+            
+            // 按日期排序，最新的排在最前面 - Sort by date, newest first
+            savedParameters.sort { $0.date > $1.date }
         } catch {
             print("加载参数记录失败: \(error.localizedDescription)") // Failed to load parameters
         }
