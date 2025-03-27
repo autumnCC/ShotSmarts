@@ -52,7 +52,7 @@
 "App Language" = "应用语言";
 "Language changes will take effect when you restart the app" = "语言更改将在重启应用后生效";
 "About" = "关于";
-"About ShotSmarts" = "关于大师指南";
+"About ShotSmarts" = "关于大师快拍";
 "Version" = "版本";
 "Reset All Settings" = "重置所有设置";
 "Reset Settings" = "重置设置";
@@ -72,5 +72,5 @@
 "Search by name" = "按名称搜索";
 
 /* About */
-"ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario." = "大师指南帮助各级摄影师计算任何拍摄场景的最佳相机设置。";
-"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "只需输入您的拍摄条件，即可让大师指南推荐理想的光圈、快门速度和其他设置，以完成完美的拍摄。"; 
+"ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario." = "大师快拍帮助各级摄影师计算任何拍摄场景的最佳相机设置。";
+"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "只需输入您的拍摄条件，即可让大师快拍推荐理想的光圈、快门速度和其他设置，以完成完美的拍摄。"; 
