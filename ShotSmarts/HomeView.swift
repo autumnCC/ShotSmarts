@@ -120,7 +120,7 @@ struct ParameterInputCard: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .onChange(of: parameters.lightCondition) { _ in
+                .onChange(of: parameters.lightCondition) { oldValue, newValue in
                     updateCalculatedParameters()
                 }
             }
@@ -153,7 +153,7 @@ struct ParameterInputCard: View {
                         .foregroundColor(.gray)
                 }
                 .tint(Color(hex: "#FF7648")) // 橙色
-                .onChange(of: parameters.iso) { _ in
+                .onChange(of: parameters.iso) { oldValue, newValue in
                     updateCalculatedParameters()
                 }
             }
@@ -171,7 +171,7 @@ struct ParameterInputCard: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .onChange(of: parameters.sceneMode) { _ in
+                .onChange(of: parameters.sceneMode) { oldValue, newValue in
                     updateCalculatedParameters()
                 }
             }
@@ -296,7 +296,7 @@ struct ParameterResultDashboard: View {
         case .sport: return "figure.run"
         case .portrait: return "person.fill"
         case .landscape: return "mountain.2.fill"
-        case .macro: return "flower"
+        case .macro: return "leaf.fill"
         case .night: return "moon.stars.fill"
         }
     }

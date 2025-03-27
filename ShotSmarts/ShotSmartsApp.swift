@@ -10,7 +10,7 @@ import ObjectiveC
 
 // 本地化字符串函数 - Localized string function
 func LocalizedString(_ key: String, comment: String) -> String {
-    return Bundle.localizedBundle.localizedString(forKey: key, value: nil, table: nil)
+    return Bundle.localizedBundle.localizedString(forKey: key, value: comment, table: nil)
 }
 
 // Bundle扩展 - Bundle extension
@@ -80,21 +80,25 @@ extension Bundle {
 }
 
 // 环境键，用于传递语言刷新状态 - Environment key for language refresh
-private struct RefreshLanguageKey: EnvironmentKey {
-    static let defaultValue: Int = 0
+private struct RefreshEnvironmentKey: EnvironmentKey {
+    static let defaultValue = 0
 }
 
 extension EnvironmentValues {
     var refreshLanguage: Int {
-        get { self[RefreshLanguageKey.self] }
-        set { self[RefreshLanguageKey.self] = newValue }
+        get { self[RefreshEnvironmentKey.self] }
+        set { self[RefreshEnvironmentKey.self] = newValue }
     }
 }
 
 @main
 struct ShotSmartsApp: App {
     // 环境对象 - Environment objects
+    @StateObject private var historyManager = ParameterHistoryManager()
     @StateObject private var settings = AppSettings.shared
+    
+    // 用于初始化应用程序的标志
+    @State private var isInitialized = false
     
     // 当系统语言变化时，重置本地化Bundle - Reset localization bundle when system language changes
     init() {
@@ -118,12 +122,30 @@ struct ShotSmartsApp: App {
     var body: some Scene {
         WindowGroup {
             MainTabView()
+                .environmentObject(historyManager)
                 .environmentObject(settings)
                 .environment(\.refreshLanguage, settings.refreshCounter)
                 .onAppear {
                     // 应用启动时重置本地化Bundle - Reset localization bundle when app launches
                     Bundle.resetBundle()
                     settings.refreshCounter += 1
+                }
+                .task {
+                    // 在应用启动时执行初始化逻辑
+                    if !isInitialized {
+                        print("应用程序首次启动，执行初始化...")
+                        
+                        // 检查是否有保存的参数
+                        if historyManager.savedParameters.isEmpty {
+                            print("参数列表为空，创建样本数据...")
+                            // 创建3个示例参数
+                            historyManager.createSampleParameters(count: 3)
+                        } else {
+                            print("已加载 \(historyManager.savedParameters.count) 条参数记录")
+                        }
+                        
+                        isInitialized = true
+                    }
                 }
         }
     }

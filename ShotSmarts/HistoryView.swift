@@ -12,6 +12,7 @@ struct HistoryView: View {
     @State private var newName = ""
     @State private var searchText = ""
     @State private var animateCards = false
+    @State private var isRefreshing = false
     
     // 过滤后的参数列表 - Filtered parameter list
     var filteredParameters: [ShootingParameters] {
@@ -32,102 +33,37 @@ struct HistoryView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 16) {
-                    if historyManager.savedParameters.isEmpty {
-                        // 空状态视图 - Empty state view
-                        VStack(spacing: 24) {
-                            Image(systemName: "photo.stack")
-                                .font(.system(size: 60))
-                                .foregroundColor(Color(hex: "#FF7648"))
-                            
-                            Text("没有保存的参数")
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundColor(.black)
-                            
-                            Text("您保存的拍摄参数将显示在这里")
-                                .font(.system(size: 16))
-                                .foregroundColor(.gray)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal)
-                        }
-                        .padding()
+                    // 搜索栏 - Search bar
+                    if !historyManager.savedParameters.isEmpty {
+                        searchBarView
+                    }
+                    
+                    // 添加下拉刷新功能
+                    if #available(iOS 15.0, *) {
+                        parameterContentView
+                            .refreshable {
+                                await refreshParameterList()
+                            }
                     } else {
-                        // 搜索栏 - Search bar
-                        HStack {
-                            Image(systemName: "magnifyingglass")
-                                .foregroundColor(.gray)
-                            
-                            TextField("搜索参数名称", text: $searchText)
-                                .font(.system(size: 16))
-                                .foregroundColor(.black)
-                            
-                            if !searchText.isEmpty {
-                                Button(action: {
-                                    searchText = ""
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                        .padding(12)
-                        .background(Color(.systemGray6))
-                        .cornerRadius(12)
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                        
-                        // 参数列表 - Parameter list
-                        ScrollView {
-                            // 排序提示信息 - Sorting info
-                            if !historyManager.savedParameters.isEmpty {
-                                Text("按时间排序，最新保存的参数显示在最前面")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.gray)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.horizontal)
-                                    .padding(.bottom, 4)
-                            }
-                            
-                            LazyVStack(spacing: 16) {
-                                ForEach(filteredParameters) { parameter in
-                                    NavigationLink(destination: ParameterDetailView(parameter: parameter)
-                                        .environmentObject(historyManager)) {
-                                        ParameterListItem(parameter: parameter)
-                                            .contentShape(Rectangle())
-                                    }
-                                    .buttonStyle(PlainButtonStyle())
-                                    .contextMenu {
-                                        Button {
-                                            selectedParameter = parameter
-                                            newName = parameter.name
-                                            showingEditNameAlert = true
-                                        } label: {
-                                            Label("重命名", systemImage: "pencil")
-                                        }
-                                        
-                                        Button(role: .destructive) {
-                                            if let index = historyManager.savedParameters.firstIndex(where: { $0.id == parameter.id }) {
-                                                historyManager.deleteParameter(at: IndexSet(integer: index))
-                                            }
-                                        } label: {
-                                            Label("删除", systemImage: "trash")
-                                        }
-                                    }
-                                    .padding(.horizontal)
-                                    .opacity(animateCards ? 1 : 0)
-                                    .animation(
-                                        .spring(response: 0.4, dampingFraction: 0.8)
-                                        .delay(Double(filteredParameters.firstIndex(where: { $0.id == parameter.id }) ?? 0) * 0.05),
-                                        value: animateCards
-                                    )
-                                }
-                            }
-                            .padding(.vertical, 8)
-                        }
+                        parameterContentView
                     }
                 }
             }
             .navigationTitle("参数记录")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                // 添加刷新按钮
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        Task {
+                            await refreshParameterList()
+                        }
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                            .foregroundColor(Color(hex: "#FF7648"))
+                    }
+                }
+            }
             .alert("重命名参数", isPresented: $showingEditNameAlert) {
                 TextField("新名称", text: $newName)
                     .font(.system(size: 16))
@@ -148,14 +84,192 @@ struct HistoryView: View {
         }
         .accentColor(Color(hex: "#FF7648"))
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            loadAndRefreshParameters()
+        }
+    }
+    
+    // 搜索栏视图组件
+    var searchBarView: some View {
+        HStack {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.gray)
+            
+            TextField("搜索参数名称", text: $searchText)
+                .font(.system(size: 16))
+                .foregroundColor(.black)
+            
+            if !searchText.isEmpty {
+                Button(action: {
+                    searchText = ""
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+            }
+        }
+        .padding(12)
+        .background(Color(.systemGray6))
+        .cornerRadius(12)
+        .padding(.horizontal)
+        .padding(.top, 8)
+    }
+    
+    // 参数内容视图 - Parameter content view
+    var parameterContentView: some View {
+        Group {
+            if historyManager.savedParameters.isEmpty {
+                // 空状态视图 - Empty state view
+                GeometryReader { geometry in
+                    VStack(spacing: 30) {
+                        Spacer()
+                        
+                        // 图标 - Icon
+                        ZStack {
+                            Circle()
+                                .fill(Color(hex: "#FF7648").opacity(0.1))
+                                .frame(width: 120, height: 120)
+                            
+                            Image(systemName: "camera.fill")
+                                .font(.system(size: 50))
+                                .foregroundColor(Color(hex: "#FF7648"))
+                        }
+                        
+                        VStack(spacing: 12) {
+                            Text("暂无参数记录")
+                                .font(.system(size: 22, weight: .bold))
+                                .foregroundColor(.black)
+                            
+                            Text("您保存的相机参数将显示在这里\n点击主页面的保存按钮来添加参数")
+                                .font(.system(size: 16))
+                                .foregroundColor(.gray)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 32)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        
+                        // 刷新按钮已移除
+                        
+                        Spacer()
+                        Spacer() // 保留两个Spacer确保内容居中偏上
+                    }
+                    .frame(width: geometry.size.width)
+                    .frame(minHeight: geometry.size.height)
+                }
+                .background(Color.white)
+            } else {
+                // 参数列表 - Parameter list
+                VStack(spacing: 0) {
+                    // 添加统计信息
+                    HStack {
+                        Text("共 \(historyManager.savedParameters.count) 条记录")
+                            .font(.system(size: 14))
+                            .foregroundColor(.gray)
+                        Spacer()
+                        // 排序提示信息 - Sorting info
+                        Text("按时间排序，最新在前")
+                            .font(.system(size: 14))
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 4)
+                    
+                    // 使用List代替ScrollView，更符合iOS标准
+                    List {
+                        ForEach(filteredParameters) { parameter in
+                            NavigationLink(destination: ParameterDetailView(parameter: parameter)
+                                .environmentObject(historyManager)) {
+                                ParameterListItem(parameter: parameter)
+                                    .contentShape(Rectangle())
+                                    .padding(.vertical, 8)
+                            }
+                            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                            .swipeActions(edge: .trailing) {
+                                Button(role: .destructive) {
+                                    if let index = historyManager.savedParameters.firstIndex(where: { $0.id == parameter.id }) {
+                                        historyManager.deleteParameter(at: IndexSet(integer: index))
+                                    }
+                                } label: {
+                                    Label("删除", systemImage: "trash")
+                                }
+                                
+                                Button {
+                                    selectedParameter = parameter
+                                    newName = parameter.name
+                                    showingEditNameAlert = true
+                                } label: {
+                                    Label("重命名", systemImage: "pencil")
+                                }
+                                .tint(Color(hex: "#FF7648"))
+                            }
+                        }
+                    }
+                    .listStyle(PlainListStyle())
+                    .background(Color.white)
+                }
+            }
+        }
+    }
+    
+    // 刷新参数列表
+    private func refreshParameterList() async {
+        isRefreshing = true
+        
+        // 先重新加载参数
+        historyManager.resortParameters()
+        
+        // 打印参数列表以便调试
+        print("刷新参数列表: 发现 \(historyManager.savedParameters.count) 条参数记录")
+        for (index, param) in historyManager.savedParameters.enumerated() {
+            print("  [\(index)] \(param.name): \(param.date)")
+        }
+        
+        // 简单的延迟
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // 刷新UI动画
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                animateCards = false
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    animateCards = true
+                }
+                isRefreshing = false
+            }
+        }
+    }
+    
+    // 加载参数并刷新UI
+    private func loadAndRefreshParameters() {
+        // 视图出现时主动请求重新排序参数
+        print("历史记录视图出现，主动请求重新加载参数")
+        
+        // 确保参数被重新加载和排序
+        historyManager.resortParameters()
+        
+        // 打印当前参数状态
+        print("当前参数列表状态：\(historyManager.savedParameters.count)个参数")
+        if historyManager.savedParameters.isEmpty {
+            print("参数列表为空，请先保存一些参数")
+        } else {
+            print("参数列表非空，包含以下参数:")
+            for (index, param) in historyManager.savedParameters.enumerated() {
+                print("  [\(index)] \(param.name): \(param.date)")
+            }
+        }
+        
+        // 延迟执行以确保数据加载完成
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation {
                 animateCards = true
             }
         }
     }
 }
 
-// 参数列表项 - Parameter List Item
+// 参数列表项 - Parameter List Item (改进版)
 struct ParameterListItem: View {
     var parameter: ShootingParameters
     
@@ -179,9 +293,7 @@ struct ParameterListItem: View {
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.black)
                     
-                    Text(dateFormatter.string(from: parameter.date))
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
+                    // 移除ID和日期显示
                 }
                 
                 Spacer()
@@ -243,7 +355,7 @@ struct ParameterListItem: View {
         case .sport: return "figure.run"
         case .portrait: return "person.fill"
         case .landscape: return "mountain.2.fill"
-        case .macro: return "flower"
+        case .macro: return "leaf.fill"
         case .night: return "moon.stars.fill"
         }
     }
@@ -267,8 +379,9 @@ struct ParameterListItem: View {
     // 日期格式化器 - Date formatter
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
+        formatter.dateStyle = .medium // 改为中等详细度，与详情页一致
+        formatter.timeStyle = .short 
+        formatter.locale = Locale(identifier: "zh_CN") // 添加区域设置，与详情页一致
         return formatter
     }
 }
@@ -338,9 +451,7 @@ struct ParameterDetailView: View {
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                     
-                    Text(formatDate(displayedParameter?.date ?? parameter.date))
-                        .font(.system(size: 16))
-                        .foregroundColor(.gray)
+                    // 移除日期显示
                 }
                 .padding(.top, 16)
                 
@@ -498,9 +609,10 @@ struct ParameterDetailView: View {
             // 视图出现时加载参数 - Load parameter when view appears
             self.loadParameter()
         }
-        .onChange(of: parameter) { newValue in
-            // 当参数更改时更新显示内容 - Update displayed content when parameter changes
-            self.displayedParameter = newValue
+        // 使用 iOS 14+ 兼容的方式处理参数变化
+        .onChange(of: parameter.id) { _ in
+            // 当参数更改时更新显示内容
+            self.displayedParameter = parameter
         }
     }
     
@@ -535,6 +647,9 @@ struct ParameterDetailView: View {
         self.isNameChanged = true
         
         print("参数已重命名: \(oldName) -> \(newName)") // Parameter has been renamed
+        
+        // 确保返回列表时参数已经重新排序
+        historyManager.resortParameters()
     }
     
     // 生成参数总结 - Generate parameter summary
@@ -583,7 +698,7 @@ struct ParameterDetailView: View {
         case .sport: return "figure.run" // 运动场景图标
         case .portrait: return "person.fill" // 人像场景图标
         case .landscape: return "mountain.2.fill" // 风景场景图标
-        case .macro: return "flower" // 微距场景图标
+        case .macro: return "leaf.fill" // 微距场景图标
         case .night: return "moon.stars.fill" // 夜景场景图标
         }
     }
