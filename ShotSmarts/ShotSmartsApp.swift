@@ -137,9 +137,7 @@ struct ShotSmartsApp: App {
                         
                         // 检查是否有保存的参数
                         if historyManager.savedParameters.isEmpty {
-                            print("参数列表为空，创建样本数据...")
-                            // 创建3个示例参数
-                            historyManager.createSampleParameters(count: 3)
+                            print("参数列表为空")
                         } else {
                             print("已加载 \(historyManager.savedParameters.count) 条参数记录")
                         }

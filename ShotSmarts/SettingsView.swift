@@ -196,7 +196,7 @@ struct AboutView: View {
                     Spacer(minLength: 30)
                     
                     // 版权信息 - Copyright info
-                    Text("© 2024 大师快拍")
+                    Text("© 2025 大师快拍")
                         .font(.system(size: 14))
                         .foregroundColor(.gray)
                         .padding(.bottom)
