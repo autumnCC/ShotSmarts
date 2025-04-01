@@ -73,4 +73,31 @@
 
 /* About */
 "ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario." = "ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario.";
-"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot."; 
+"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot.";
+
+/* App name */
+"ShotSmarts" = "ShotSmarts";
+
+/* Parameter summary */
+"Parameter configuration for %@ scene, under %@ light conditions." = "Parameter configuration for %@ scene, under %@ light conditions.";
+"Using aperture %@, shutter speed %@, ISO %d, with %@ metering, exposure compensation %@." = "Using aperture %@, shutter speed %@, ISO %d, with %@ metering, exposure compensation %@.";
+"These parameters will help you achieve balanced exposure and good imaging results." = "These parameters will help you achieve balanced exposure and good imaging results.";
+
+/* Feature descriptions */
+"Main Features" = "Main Features";
+"Smart Recommendations" = "Smart Recommendations";
+"Intelligent camera parameter settings based on light and scene" = "Intelligent camera parameter settings based on light and scene";
+"Shooting Records" = "Shooting Records";
+"Save and view historical shooting parameters anytime" = "Save and view historical shooting parameters anytime";
+"Scene Optimization" = "Scene Optimization";
+"Automatically optimize parameter configurations for different scenes" = "Automatically optimize parameter configurations for different scenes";
+"© 2025 ShotSmarts" = "© 2025 ShotSmarts";
+
+/* History View */
+"Total: %d records" = "Total: %d records";
+"Sorted by time, newest first" = "Sorted by time, newest first";
+"Your saved shooting parameters will appear here\nTap the Save button on the home screen to add parameters" = "Your saved shooting parameters will appear here\nTap the Save button on the home screen to add parameters";
+"Camera Parameters" = "Camera Parameters";
+"Shooting Conditions" = "Shooting Conditions";
+"Parameter Summary" = "Parameter Summary";
+"Parameter Details" = "Parameter Details"; 

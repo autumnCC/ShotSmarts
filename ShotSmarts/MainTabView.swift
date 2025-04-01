@@ -14,7 +14,7 @@ struct MainTabView: View {
             // 首页标签 - Home tab
             HomeView()
                 .tabItem {
-                    Label("首页", systemImage: "camera")
+                    Label(NSLocalizedString("Home", comment: "Home tab"), systemImage: "camera")
                         .font(.system(size: 12)) // 增加字体大小
                 }
                 .tag(0)
@@ -22,7 +22,7 @@ struct MainTabView: View {
             // 历史记录标签 - History tab
             HistoryView()
                 .tabItem {
-                    Label("记录", systemImage: "list.bullet")
+                    Label(NSLocalizedString("History", comment: "History tab"), systemImage: "list.bullet")
                         .font(.system(size: 12)) // 增加字体大小
                 }
                 .tag(1)
@@ -30,7 +30,7 @@ struct MainTabView: View {
             // 设置标签 - Settings tab
             SettingsView()
                 .tabItem {
-                    Label("设置", systemImage: "gear")
+                    Label(NSLocalizedString("Settings", comment: "Settings tab"), systemImage: "gear")
                         .font(.system(size: 12)) // 增加字体大小
                 }
                 .tag(2)

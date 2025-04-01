@@ -1,103 +1,101 @@
-# ShotSmarts / 光影指南
+# ShotSmarts 大师快拍
 
-ShotSmarts (光影指南) is an iOS app that helps photographers of all levels calculate the optimal camera settings for any shooting scenario. The app provides recommendations for aperture, shutter speed, metering mode, and exposure compensation based on light conditions, ISO settings, and scene mode.
+[English](#english) | [中文](#chinese)
 
-## Features
+<a name="english"></a>
+## 📸 ShotSmarts
 
-- Light condition selection (Sunny, Cloudy, Overcast, Night, Indoor)
-- ISO adjustment slider (100-3200)
-- Scene mode selection (Sports, Portrait, Landscape, Macro, Night)
-- Dynamic calculation of recommended aperture and shutter speed
-- Automatic metering mode matching
-- Intelligent exposure compensation suggestions
-- Parameter history with saving and management features
-- Multi-language support (English, Chinese, Japanese)
+ShotSmarts is an intelligent camera parameter assistant designed to help photographers quickly determine the optimal camera settings for any shooting scenario. Whether you're a beginner learning photography or a professional seeking quick parameter references in complex lighting conditions, ShotSmarts provides accurate and practical recommendations.
 
-## Requirements
+### ✨ Key Features
 
-- iOS 15.0+
-- Xcode 13.0+
-- Swift 5.5+
+- **Smart Parameter Calculation**: Automatically recommends optimal aperture, shutter speed, ISO, and exposure compensation based on shooting conditions
+- **Scene-Specific Optimization**: Specialized parameter adjustments for different scenarios (sports, portrait, landscape, macro, night)
+- **Parameter History**: Save and manage your shooting parameters for future reference
+- **Intuitive Interface**: Clean and user-friendly design with clear parameter displays
 
-## Building the Project
+### 🛠 Technical Requirements
 
-1. Clone or download the repository
-2. Open `ShotSmarts.xcodeproj` in Xcode
-3. Select your development team in the Signing & Capabilities tab
-4. Build and run the app on a simulator or device
+- iOS 15.0 or later
+- Compatible with iPhone and iPad
+- Language support: English, Chinese (Simplified)
 
-## Project Structure
+### 📱 Usage
 
-- `Models/` - Contains data models and calculation algorithms
-- `Views/` - Contains all SwiftUI views
-- `Localizations/` - Contains localization files for different languages
+1. **Select Shooting Conditions**
+   - Choose current lighting condition
+   - Adjust ISO sensitivity
+   - Select scene mode
 
-## Submitting to the App Store
+2. **Get Recommendations**
+   - View recommended camera parameters
+   - Save parameters with custom names
+   - Access saved parameters in history
 
-### 1. Prepare Your App
+3. **Manage History**
+   - View saved parameter sets
+   - Search by parameter name
+   - Rename or delete saved parameters
 
-1. Verify all app functionality works correctly
-2. Ensure all text is properly localized
-3. Test the app on multiple device sizes
-4. Create app icons and splash screens if not already included
+### 🔄 Updates
 
-### 2. App Store Connect Setup
+Check [changelog.md](docs/changelog.md) for version history and upcoming features.
 
-1. Log in to [App Store Connect](https://appstoreconnect.apple.com/)
-2. Create a new app listing:
-   - Select "My Apps" and click "+"
-   - Choose "New App"
-   - Select iOS as the platform
-   - Enter app information:
-     - For Chinese markets: Use "光影指南" as the name
-     - For other markets: Use "ShotSmarts" as the name
-   - Select your primary language
-   - Use the bundle ID from your Xcode project
-   - Enter an SKU (a unique identifier for your app)
+### 📖 Documentation
 
-3. Complete App Information:
-   - Add app description
-   - Add keywords
-   - Add support URL
-   - Add marketing URL (optional)
-   - Enter privacy policy URL
-   - Set app category (likely "Photo & Video")
+For detailed usage instructions, please refer to:
+- [English User Guide](docs/user_guide_en.md)
+- [API Documentation](docs/api.md)
 
-4. Add screenshots for all required device sizes:
-   - iPhone (6.5" Display)
-   - iPhone (5.5" Display)
-   - iPad Pro (12.9" Display, 3rd Generation)
-   - iPad Pro (12.9" Display, 2nd Generation)
+---
 
-5. Upload app preview videos (optional)
-6. Set app pricing and availability
-7. Set up in-app purchases if applicable
-8. Complete app review information
+<a name="chinese"></a>
+## 📸 大师快拍
 
-### 3. Upload Your Build
+大师快拍是一款智能相机参数助手，旨在帮助摄影师快速确定最佳的拍摄参数。无论您是正在学习摄影的新手，还是需要在复杂光线环境下快速参考参数的专业摄影师，大师快拍都能为您提供准确实用的建议。
 
-1. In Xcode, select "Generic iOS Device" as the build destination
-2. Go to Product > Archive
-3. When archiving completes, the Organizer window will appear
-4. Select your archive and click "Distribute App"
-5. Select "App Store Connect" and click "Next"
-6. Select "Upload" and click "Next"
-7. Select options for distribution and click "Next"
-8. Review the settings and click "Upload"
+### ✨ 主要功能
 
-### 4. Submit for Review
+- **智能参数计算**：根据拍摄条件自动推荐最佳光圈、快门速度、ISO和曝光补偿
+- **场景优化**：针对不同场景（运动、人像、风景、微距、夜景）的专业参数调整
+- **参数历史**：保存和管理您的拍摄参数，方便日后查看
+- **直观界面**：清晰简洁的设计，参数显示一目了然
 
-1. Back in App Store Connect, select your app
-2. Click on "iOS App" under the "App Store" tab
-3. Select the build you just uploaded
-4. Complete the "App Review Information" section
-5. Complete the "Version Information" section
-6. Click "Save" and then "Submit for Review"
+### 🛠 技术要求
 
-## License
+- iOS 15.0 或更高版本
+- 支持 iPhone 和 iPad
+- 语言支持：中文（简体）、英文
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+### 📱 使用方法
 
-## Credits
+1. **选择拍摄条件**
+   - 选择当前光线条件
+   - 调整 ISO 感光度
+   - 选择场景模式
 
-Created by [Your Name] - Contact: [Your Email] 
+2. **获取推荐参数**
+   - 查看推荐的相机参数
+   - 为参数设置名称并保存
+   - 在历史记录中查看保存的参数
+
+3. **管理历史记录**
+   - 查看已保存的参数组
+   - 按参数名称搜索
+   - 重命名或删除保存的参数
+
+### 🔄 更新记录
+
+查看 [changelog.md](docs/changelog.md) 了解版本历史和即将推出的功能。
+
+### 📖 文档
+
+详细使用说明请参考：
+- [中文用户指南](docs/user_guide_zh.md)
+- [API文档](docs/api.md)
+
+---
+
+## 📝 License
+
+Copyright © 2024 ShotSmarts. All rights reserved. 

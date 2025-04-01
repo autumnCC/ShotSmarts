@@ -8,75 +8,48 @@
 import SwiftUI
 import ObjectiveC
 
-// 本地化字符串函数 - Localized string function
-func LocalizedString(_ key: String, comment: String) -> String {
-    return Bundle.localizedBundle.localizedString(forKey: key, value: comment, table: nil)
+// 调试本地化函数 - Debug localization function
+func debugLocalization() {
+    let locale = Locale.current
+    let language = locale.language.languageCode?.identifier ?? "unknown"
+    let region = locale.region?.identifier ?? "unknown"
+    let preferredLanguages = Bundle.main.preferredLocalizations
+    
+    print("======== DEBUG LOCALIZATION INFO ========")
+    print("Current Locale: \(locale)")
+    print("Language Code: \(language)")
+    print("Region: \(region)")
+    print("Preferred Languages: \(preferredLanguages)")
+    
+    // 测试本地化字符串 - Test localized strings
+    let testKeys = ["Home", "Settings", "History", "ShotSmarts"]
+    for key in testKeys {
+        print("Test '\(key)': \(NSLocalizedString(key, comment: ""))")
+    }
+    
+    print("=========================================")
 }
 
-// Bundle扩展 - Bundle extension
-extension Bundle {
-    // 根据系统语言的本地化Bundle - Localized bundle based on system language
-    static var localizedBundle: Bundle = {
-        // 尝试使用系统首选语言，如果不是中文、英文或日文，则默认使用中文
-        let systemPreferredLanguage = Bundle.main.preferredLocalizations.first ?? ""
-        
-        // 确定使用的语言代码
-        let preferredLanguage: String
-        if systemPreferredLanguage.contains("zh") {
-            // 如果系统语言是中文的任何变体，使用简体中文
-            preferredLanguage = "zh-Hans"
-        } else if systemPreferredLanguage.contains("en") {
-            preferredLanguage = "en"
-        } else if systemPreferredLanguage.contains("ja") {
-            preferredLanguage = "ja"
-        } else {
-            // 默认使用中文
-            preferredLanguage = "zh-Hans"
-        }
-        
-        // 获取语言资源路径 - Get language resource path
-        guard let path = Bundle.main.path(forResource: preferredLanguage, ofType: "lproj", inDirectory: "Localizations") else {
-            // 如果找不到对应语言资源，返回主Bundle - If language resource not found, return main bundle
-            return Bundle.main
-        }
-        
-        // 返回对应语言的Bundle - Return bundle for corresponding language
-        return Bundle(path: path) ?? Bundle.main
-    }()
+// 确保系统语言设置正确应用 - Ensure system language settings are correctly applied
+func ensureCorrectLanguageSettings() {
+    let preferredLanguages = Bundle.main.preferredLocalizations
+    print("系统首选语言: \(preferredLanguages)")
     
-    // 重置本地化Bundle - Reset localized bundle
-    static func resetBundle() {
-        // 清除Bundle缓存，下次访问时会重新加载 - Clear bundle cache, will reload on next access
-        objc_sync_enter(Bundle.self)
-        defer { objc_sync_exit(Bundle.self) }
-        localizedBundle = {
-            // 尝试使用系统首选语言，如果不是中文、英文或日文，则默认使用中文
-            let systemPreferredLanguage = Bundle.main.preferredLocalizations.first ?? ""
-            
-            // 确定使用的语言代码
-            let preferredLanguage: String
-            if systemPreferredLanguage.contains("zh") {
-                // 如果系统语言是中文的任何变体，使用简体中文
-                preferredLanguage = "zh-Hans"
-            } else if systemPreferredLanguage.contains("en") {
-                preferredLanguage = "en"
-            } else if systemPreferredLanguage.contains("ja") {
-                preferredLanguage = "ja"
-            } else {
-                // 默认使用中文
-                preferredLanguage = "zh-Hans"
-            }
-            
-            // 获取语言资源路径 - Get language resource path
-            guard let path = Bundle.main.path(forResource: preferredLanguage, ofType: "lproj", inDirectory: "Localizations") else {
-                // 如果找不到对应语言资源，返回主Bundle - If language resource not found, return main bundle
-                return Bundle.main
-            }
-            
-            // 返回对应语言的Bundle - Return bundle for corresponding language
-            return Bundle(path: path) ?? Bundle.main
-        }()
+    // 检查应用是否正在使用系统语言 - Check if app is using system language
+    let currentLocale = Locale.current
+    print("当前Locale: \(currentLocale)")
+    
+    // 确保没有语言强制设置 - Ensure no language forcing is in place
+    if let appleLanguages = UserDefaults.standard.array(forKey: "AppleLanguages") as? [String] {
+        print("当前AppleLanguages: \(appleLanguages)")
+    } else {
+        print("AppleLanguages未设置，将使用系统默认语言")
     }
+    
+    // 测试几个关键界面元素的本地化 - Test localization of key UI elements
+    print("Home -> \(NSLocalizedString("Home", comment: "Home tab"))")
+    print("Settings -> \(NSLocalizedString("Settings", comment: "Settings tab"))")
+    print("History -> \(NSLocalizedString("History", comment: "History tab"))")
 }
 
 // 环境键，用于传递语言刷新状态 - Environment key for language refresh
@@ -100,11 +73,15 @@ struct ShotSmartsApp: App {
     // 用于初始化应用程序的标志
     @State private var isInitialized = false
     
-    // 当系统语言变化时，重置本地化Bundle - Reset localization bundle when system language changes
+    // 当系统语言变化时，刷新UI - Refresh UI when system language changes
     init() {
-        // 强制设置应用程序使用中文环境 - Force app to use Chinese locale
-        UserDefaults.standard.set(["zh-Hans"], forKey: "AppleLanguages")
-        UserDefaults.standard.synchronize()
+        // 确保应用启动时使用系统语言 - Ensure system language is used when app launches
+        // 如果之前有强制设置的语言，移除它 - Remove any forced language settings if they exist
+        if UserDefaults.standard.object(forKey: "AppleLanguages") != nil {
+            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+            UserDefaults.standard.synchronize()
+            print("已移除AppleLanguages强制设置，将使用系统语言")
+        }
         
         let settingsRef = settings
         NotificationCenter.default.addObserver(
@@ -112,10 +89,12 @@ struct ShotSmartsApp: App {
             object: nil,
             queue: .main
         ) { _ in
-            // 系统语言变化，重置本地化Bundle - System language changed, reset localization bundle
-            Bundle.resetBundle()
-            // 触发UI刷新 - Trigger UI refresh
-            settingsRef.refreshCounter += 1
+            // 系统语言变化，触发UI刷新 - System language changed, trigger UI refresh
+            DispatchQueue.main.async {
+                print("检测到系统语言变化，刷新UI")
+                settingsRef.refreshCounter += 1
+                debugLocalization() // 打印当前语言环境信息
+            }
         }
     }
     
@@ -126,9 +105,21 @@ struct ShotSmartsApp: App {
                 .environmentObject(settings)
                 .environment(\.refreshLanguage, settings.refreshCounter)
                 .onAppear {
-                    // 应用启动时重置本地化Bundle - Reset localization bundle when app launches
-                    Bundle.resetBundle()
+                    // 增加刷新计数触发UI更新
                     settings.refreshCounter += 1
+                    
+                    // 打印调试信息
+                    debugLocalization()
+                    
+                    // 确保正确应用系统语言设置
+                    ensureCorrectLanguageSettings()
+                    
+                    // 打印系统语言信息
+                    print("系统首选语言: \(Bundle.main.preferredLocalizations)")
+                    
+                    // 测试几个本地化字符串
+                    print("本地化测试 - '首页': \(NSLocalizedString("Home", comment: ""))")
+                    print("本地化测试 - '参数记录': \(NSLocalizedString("Parameter History", comment: ""))")
                 }
                 .task {
                     // 在应用启动时执行初始化逻辑
@@ -149,10 +140,3 @@ struct ShotSmartsApp: App {
     }
 }
 
-// 修复AppSettings中的resetLocalizationBundle方法 - Fix resetLocalizationBundle method in AppSettings
-extension AppSettings {
-    func resetLocalizationBundle() {
-        Bundle.resetBundle()
-        self.refreshCounter += 1
-    }
-}

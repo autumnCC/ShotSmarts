@@ -14,6 +14,9 @@ struct HistoryView: View {
     @State private var animateCards = false
     @State private var isRefreshing = false
     
+    // 环境值，用于检测语言变化 - Environment value for language change detection
+    @Environment(\.refreshLanguage) var refreshLanguage
+    
     // 过滤后的参数列表 - Filtered parameter list
     var filteredParameters: [ShootingParameters] {
         if searchText.isEmpty {
@@ -49,7 +52,8 @@ struct HistoryView: View {
                     }
                 }
             }
-            .navigationTitle("参数记录")
+            .background(Color(.systemGray6))
+            .navigationTitle(NSLocalizedString("Parameter History", comment: "Parameter History title"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 // 添加刷新按钮
@@ -64,27 +68,35 @@ struct HistoryView: View {
                     }
                 }
             }
-            .alert("重命名参数", isPresented: $showingEditNameAlert) {
-                TextField("新名称", text: $newName)
+            .alert(NSLocalizedString("Rename Parameter", comment: "Rename parameter dialog title"), isPresented: $showingEditNameAlert) {
+                TextField(NSLocalizedString("New name", comment: "New name field"), text: $newName)
                     .font(.system(size: 16))
                 
-                Button("取消", role: .cancel) {
+                Button(NSLocalizedString("Cancel", comment: "Cancel button"), role: .cancel) {
                     newName = ""
                 }
                 
-                Button("保存") {
+                Button(NSLocalizedString("Save", comment: "Save button")) {
                     if let parameter = selectedParameter, !newName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         historyManager.renameParameter(parameter, to: newName)
                         newName = ""
                     }
                 }
             } message: {
-                Text("为此参数设置新名称")
+                Text(NSLocalizedString("Enter a new name for this parameter", comment: "Rename dialog message"))
             }
         }
         .accentColor(Color(hex: "#FF7648"))
         .onAppear {
             loadAndRefreshParameters()
+        }
+        // 当语言变化或刷新计数器变化时重新加载视图
+        .onChange(of: refreshLanguage) { oldValue, newValue in
+            if oldValue != newValue {
+                print("HistoryView检测到语言变化或刷新触发，重新加载UI")
+                // 通过强制重新排序参数来刷新视图
+                historyManager.resortParameters()
+            }
         }
     }
     
@@ -94,7 +106,7 @@ struct HistoryView: View {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(.gray)
             
-            TextField("搜索参数名称", text: $searchText)
+            TextField(NSLocalizedString("Search by name", comment: "Search placeholder"), text: $searchText)
                 .font(.system(size: 16))
                 .foregroundColor(.black)
             
@@ -135,11 +147,11 @@ struct HistoryView: View {
                         }
                         
                         VStack(spacing: 12) {
-                            Text("暂无参数记录")
+                            Text(NSLocalizedString("No Saved Parameters", comment: "No saved parameters title"))
                                 .font(.system(size: 22, weight: .bold))
                                 .foregroundColor(.black)
                             
-                            Text("您保存的相机参数将显示在这里\n点击主页面的保存按钮来添加参数")
+                            Text(NSLocalizedString("Your saved shooting parameters will appear here\nTap the Save button on the home screen to add parameters", comment: "Empty state message"))
                                 .font(.system(size: 16))
                                 .foregroundColor(.gray)
                                 .multilineTextAlignment(.center)
@@ -161,12 +173,12 @@ struct HistoryView: View {
                 VStack(spacing: 0) {
                     // 添加统计信息
                     HStack {
-                        Text("共 \(historyManager.savedParameters.count) 条记录")
+                        Text(String(format: NSLocalizedString("Total: %d records", comment: "Records count"), historyManager.savedParameters.count))
                             .font(.system(size: 14))
                             .foregroundColor(.gray)
                         Spacer()
                         // 排序提示信息 - Sorting info
-                        Text("按时间排序，最新在前")
+                        Text(NSLocalizedString("Sorted by time, newest first", comment: "Sorting info"))
                             .font(.system(size: 14))
                             .foregroundColor(.gray)
                     }
@@ -191,7 +203,7 @@ struct HistoryView: View {
                                         historyManager.deleteParameter(at: IndexSet(integer: index))
                                     }
                                 } label: {
-                                    Label("删除", systemImage: "trash")
+                                    Label(NSLocalizedString("Delete", comment: "Delete button"), systemImage: "trash")
                                 }
                                 
                                 Button {
@@ -199,7 +211,7 @@ struct HistoryView: View {
                                     newName = parameter.name
                                     showingEditNameAlert = true
                                 } label: {
-                                    Label("重命名", systemImage: "pencil")
+                                    Label(NSLocalizedString("Rename", comment: "Rename button"), systemImage: "pencil")
                                 }
                                 .tint(Color(hex: "#FF7648"))
                             }
@@ -316,14 +328,14 @@ struct ParameterListItem: View {
             HStack(spacing: 4) {
                 // 光圈 - Aperture
                 CompactParameterIndicator(
-                    label: "光圈",
+                    label: NSLocalizedString("Aperture", comment: "Aperture label"),
                     value: parameter.formattedAperture,
                     icon: "camera.aperture"
                 )
                 
                 // 快门 - Shutter
                 CompactParameterIndicator(
-                    label: "快门",
+                    label: NSLocalizedString("Shutter", comment: "Shutter label"),
                     value: parameter.formattedShutterSpeed,
                     icon: "timer"
                 )
@@ -337,7 +349,7 @@ struct ParameterListItem: View {
                 
                 // 曝光 - Exposure
                 CompactParameterIndicator(
-                    label: "曝光",
+                    label: NSLocalizedString("Exp. Comp.", comment: "Exposure compensation label"),
                     value: shortExposureValue(parameter.formattedExposureCompensation),
                     icon: "plusminus"
                 )
@@ -381,7 +393,7 @@ struct ParameterListItem: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium // 改为中等详细度，与详情页一致
         formatter.timeStyle = .short 
-        formatter.locale = Locale(identifier: "zh_CN") // 添加区域设置，与详情页一致
+        // 使用系统默认区域设置，而非强制中文
         return formatter
     }
 }
@@ -457,7 +469,7 @@ struct ParameterDetailView: View {
                 
                 // 相机参数卡片网格 - Camera Parameters Grid
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("相机参数")
+                    Text(NSLocalizedString("Camera Parameters", comment: "Camera parameters section title"))
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(.black)
                         .padding(.horizontal)
@@ -466,7 +478,7 @@ struct ParameterDetailView: View {
                         // 光圈卡片 - Aperture card
                         CameraParameterCard(
                             icon: "camera.aperture",
-                            title: "光圈",
+                            title: NSLocalizedString("Aperture", comment: "Aperture label"),
                             value: displayedParameter?.formattedAperture ?? parameter.formattedAperture,
                             color: themeColor
                         )
@@ -474,7 +486,7 @@ struct ParameterDetailView: View {
                         // 快门卡片 - Shutter card
                         CameraParameterCard(
                             icon: "timer",
-                            title: "快门",
+                            title: NSLocalizedString("Shutter", comment: "Shutter label"),
                             value: displayedParameter?.formattedShutterSpeed ?? parameter.formattedShutterSpeed,
                             color: themeColor
                         )
@@ -490,7 +502,7 @@ struct ParameterDetailView: View {
                         // 曝光补偿卡片 - Exposure card
                         CameraParameterCard(
                             icon: "plusminus",
-                            title: "曝光",
+                            title: NSLocalizedString("Exp. Comp.", comment: "Exposure compensation label"),
                             value: displayedParameter?.formattedExposureCompensation ?? parameter.formattedExposureCompensation,
                             color: themeColor
                         )
@@ -503,7 +515,7 @@ struct ParameterDetailView: View {
                 
                 // 拍摄条件部分 - Shooting Conditions Section
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("拍摄条件")
+                    Text(NSLocalizedString("Shooting Conditions", comment: "Shooting conditions section title"))
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(.black)
                         .padding(.horizontal)
@@ -512,8 +524,8 @@ struct ParameterDetailView: View {
                         // 光线条件行 - Light Condition row
                         InfoRow(
                             icon: getLightConditionIcon(displayedParameter?.lightCondition ?? parameter.lightCondition),
-                            title: "光线条件",
-                            value: LocalizedString(displayedParameter?.lightCondition.rawValue ?? parameter.lightCondition.rawValue, comment: "Light condition value"),
+                            title: NSLocalizedString("Light Condition", comment: "Light condition label"),
+                            value: NSLocalizedString(displayedParameter?.lightCondition.rawValue ?? parameter.lightCondition.rawValue, comment: "Light condition value"),
                             color: themeColor
                         )
                         
@@ -523,8 +535,8 @@ struct ParameterDetailView: View {
                         // 场景模式行 - Scene Mode row
                         InfoRow(
                             icon: getSceneModeIcon(displayedParameter?.sceneMode ?? parameter.sceneMode),
-                            title: "场景模式",
-                            value: LocalizedString(displayedParameter?.sceneMode.rawValue ?? parameter.sceneMode.rawValue, comment: "Scene mode value"),
+                            title: NSLocalizedString("Scene Mode", comment: "Scene mode label"),
+                            value: NSLocalizedString(displayedParameter?.sceneMode.rawValue ?? parameter.sceneMode.rawValue, comment: "Scene mode value"),
                             color: themeColor
                         )
                         
@@ -534,8 +546,8 @@ struct ParameterDetailView: View {
                         // 测光模式行 - Metering Mode row
                         InfoRow(
                             icon: "viewfinder",
-                            title: "测光模式",
-                            value: LocalizedString(displayedParameter?.meteringMode.rawValue ?? parameter.meteringMode.rawValue, comment: "Metering mode value"),
+                            title: NSLocalizedString("Metering Mode", comment: "Metering mode label"),
+                            value: NSLocalizedString(displayedParameter?.meteringMode.rawValue ?? parameter.meteringMode.rawValue, comment: "Metering mode value"),
                             color: themeColor
                         )
                     }
@@ -547,7 +559,7 @@ struct ParameterDetailView: View {
                 
                 // 参数总结部分 - Parameters Summary section
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("参数总结")
+                    Text(NSLocalizedString("Parameter Summary", comment: "Parameter summary section title"))
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(.black)
                         .padding(.horizontal)
@@ -569,7 +581,7 @@ struct ParameterDetailView: View {
             .padding(.bottom, 24)
         }
         .background(Color.white) // 白色背景
-        .navigationTitle("参数详情") // 导航栏标题
+        .navigationTitle(NSLocalizedString("Parameter Details", comment: "Parameter details title")) // 导航栏标题
         .navigationBarTitleDisplayMode(.inline) // 导航栏标题显示模式
         .toolbar {
             // 编辑按钮 - Edit button
@@ -585,17 +597,17 @@ struct ParameterDetailView: View {
             }
         }
         // 重命名参数弹窗 - Rename parameter alert
-        .alert("重命名参数", isPresented: $showingEditAlert) {
+        .alert(NSLocalizedString("Rename Parameter", comment: "Rename parameter dialog title"), isPresented: $showingEditAlert) {
             // 名称输入框 - Name input field
             TextField("新名称", text: $newName)
             
             // 取消按钮 - Cancel button
-            Button("取消", role: .cancel) {
+            Button(NSLocalizedString("Cancel", comment: "Cancel button"), role: .cancel) {
                 newName = ""
             }
             
             // 保存按钮 - Save button
-            Button("保存") {
+            Button(NSLocalizedString("Save", comment: "Save button")) {
                 // 检查新名称是否有效 - Check if new name is valid
                 if !newName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                     // 修改参数名称和更新状态 - Modify parameter name and update states
@@ -603,7 +615,7 @@ struct ParameterDetailView: View {
                 }
             }
         } message: {
-            Text("为此参数设置新名称")
+            Text(NSLocalizedString("Enter a new name for this parameter", comment: "Rename dialog message"))
         }
         .onAppear {
             // 视图出现时加载参数 - Load parameter when view appears
@@ -657,14 +669,35 @@ struct ParameterDetailView: View {
         // 使用显示参数或原始参数 - Use displayed parameter or original parameter
         let param = displayedParameter ?? parameter
         
+        // 添加本地化参数总结模板
+        let templatePart1 = NSLocalizedString(
+            "Parameter configuration for %@ scene, under %@ light conditions.",
+            comment: "Parameter summary first part"
+        )
+        let templatePart2 = NSLocalizedString(
+            "Using aperture %@, shutter speed %@, ISO %d, with %@ metering, exposure compensation %@.",
+            comment: "Parameter summary second part"
+        )
+        let templatePart3 = NSLocalizedString(
+            "These parameters will help you achieve balanced exposure and good imaging results.",
+            comment: "Parameter summary third part"
+        )
+        
+        // 格式化第一部分
+        let part1 = String(format: templatePart1, 
+                           NSLocalizedString(param.sceneMode.rawValue, comment: ""), 
+                           NSLocalizedString(param.lightCondition.rawValue, comment: ""))
+        
+        // 格式化第二部分
+        let part2 = String(format: templatePart2, 
+                           param.formattedAperture, 
+                           param.formattedShutterSpeed, 
+                           Int(param.iso),
+                           NSLocalizedString(param.meteringMode.rawValue, comment: ""),
+                           param.formattedExposureCompensation)
+        
         // 返回格式化的文本总结 - Return formatted text summary
-        return """
-        此参数配置适用于\(LocalizedString(param.sceneMode.rawValue, comment: ""))场景，在\(LocalizedString(param.lightCondition.rawValue, comment: ""))光线条件下拍摄。
-        
-        使用光圈\(param.formattedAperture)，快门速度\(param.formattedShutterSpeed)，ISO感光度\(Int(param.iso))，采用\(LocalizedString(param.meteringMode.rawValue, comment: ""))测光，曝光补偿\(param.formattedExposureCompensation)。
-        
-        这组参数可以帮助您获得平衡的曝光和良好的成像效果。
-        """
+        return part1 + "\n\n" + part2 + "\n\n" + templatePart3
     }
     
     // 格式化日期 - Format date
@@ -673,7 +706,7 @@ struct ParameterDetailView: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium // 中等详细度的日期格式
         formatter.timeStyle = .short // 简短的时间格式
-        formatter.locale = Locale(identifier: "zh_CN") // 强制使用中文日期格式
+        // 使用系统默认区域设置而非强制中文
         
         // 返回格式化的日期字符串 - Return formatted date string
         return formatter.string(from: date)

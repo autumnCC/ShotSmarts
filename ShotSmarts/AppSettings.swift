@@ -18,11 +18,11 @@ class AppSettings: ObservableObject {
         var displayName: String {
             switch self {
             case .system: 
-                return LocalizedString("System Default", comment: "System default theme")
+                return NSLocalizedString("System Default", comment: "System default theme")
             case .light: 
-                return LocalizedString("Light", comment: "Light theme")
+                return NSLocalizedString("Light", comment: "Light theme")
             case .dark: 
-                return LocalizedString("Dark", comment: "Dark theme")
+                return NSLocalizedString("Dark", comment: "Dark theme")
             }
         }
         
@@ -51,6 +51,9 @@ class AppSettings: ObservableObject {
     // 刷新计数器 - 用于在语言变化时通知视图更新
     @Published var refreshCounter: Int = 0
     
+    // 系统语言 - System language
+    @Published var systemLanguage: String = Locale.current.language.languageCode?.identifier ?? "en"
+    
     // 私有初始化方法 - Private initialization method
     private init() {
         // 从用户默认设置加载主题设置 - Load theme settings from user defaults
@@ -60,6 +63,10 @@ class AppSettings: ObservableObject {
         // 初始化刷新计数器
         self.refreshCounter = 0
         
+        // 记录当前系统语言
+        self.systemLanguage = Bundle.main.preferredLocalizations.first ?? "en"
+        print("初始化应用设置 - 当前系统语言: \(self.systemLanguage)")
+        
         // 监听系统语言变化
         NotificationCenter.default.addObserver(
             self,
@@ -67,20 +74,53 @@ class AppSettings: ObservableObject {
             name: NSLocale.currentLocaleDidChangeNotification,
             object: nil
         )
+        
+        // 确保没有强制设置语言
+        ensureSystemLanguage()
+    }
+    
+    // 确保使用系统语言
+    private func ensureSystemLanguage() {
+        // 检查是否有强制设置的语言，如果有则移除
+        if UserDefaults.standard.object(forKey: "AppleLanguages") != nil {
+            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+            UserDefaults.standard.synchronize()
+            print("AppSettings: 移除AppleLanguages强制设置")
+        }
     }
     
     // 系统语言变化通知处理
     @objc private func localeDidChange() {
         // 增加刷新计数器触发视图更新
         DispatchQueue.main.async {
+            // 更新记录的系统语言
+            let newLanguage = Bundle.main.preferredLocalizations.first ?? "en"
+            let oldLanguage = self.systemLanguage
+            
+            if newLanguage != oldLanguage {
+                print("系统语言变化: \(oldLanguage) -> \(newLanguage)")
+                self.systemLanguage = newLanguage
+            }
+            
             self.refreshCounter += 1
-            // 重置本地化Bundle缓存
-            self.resetLocalizationBundle()
+            // 刷新UI
+            self.refreshUI()
+            
+            // 确保没有强制设置语言
+            self.ensureSystemLanguage()
         }
+    }
+    
+    // 刷新UI
+    func refreshUI() {
+        self.refreshCounter += 1
     }
     
     // 重置为默认设置 - Reset to default settings
     func resetToDefaults() {
         theme = .system
+        
+        // 确保使用系统语言
+        ensureSystemLanguage()
     }
 } 

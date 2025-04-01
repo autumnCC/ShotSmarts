@@ -74,3 +74,30 @@
 /* About */
 "ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario." = "大师快拍帮助各级摄影师计算任何拍摄场景的最佳相机设置。";
 "Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "只需输入您的拍摄条件，即可让大师快拍推荐理想的光圈、快门速度和其他设置，以完成完美的拍摄。"; 
+
+/* App name */
+"ShotSmarts" = "大师快拍";
+
+/* Parameter summary */
+"Parameter configuration for %@ scene, under %@ light conditions." = "此参数配置适用于%@场景，在%@光线条件下拍摄。";
+"Using aperture %@, shutter speed %@, ISO %d, with %@ metering, exposure compensation %@." = "使用光圈%@，快门速度%@，ISO感光度%d，采用%@测光，曝光补偿%@。";
+"These parameters will help you achieve balanced exposure and good imaging results." = "这组参数可以帮助您获得平衡的曝光和良好的成像效果。"; 
+
+/* Feature descriptions */
+"Main Features" = "主要功能";
+"Smart Recommendations" = "智能推荐";
+"Intelligent camera parameter settings based on light and scene" = "基于光线和场景的智能相机参数设置";
+"Shooting Records" = "拍摄记录";
+"Save and view historical shooting parameters anytime" = "保存并随时查看历史拍摄参数";
+"Scene Optimization" = "场景优化";
+"Automatically optimize parameter configurations for different scenes" = "针对不同场景自动优化参数配置";
+"© 2025 ShotSmarts" = "© 2025 大师快拍"; 
+
+/* History View */
+"Total: %d records" = "共 %d 条记录";
+"Sorted by time, newest first" = "按时间排序，最新在前";
+"Your saved shooting parameters will appear here\nTap the Save button on the home screen to add parameters" = "您保存的相机参数将显示在这里\n点击主页面的保存按钮来添加参数";
+"Camera Parameters" = "相机参数";
+"Shooting Conditions" = "拍摄条件";
+"Parameter Summary" = "参数总结";
+"Parameter Details" = "参数详情"; 

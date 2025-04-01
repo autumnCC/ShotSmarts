@@ -14,7 +14,7 @@ struct SettingsView: View {
                 VStack(spacing: 16) {
                     // 外观部分 - Appearance section
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("外观设置")
+                        Text(NSLocalizedString("Appearance", comment: "Appearance settings"))
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.black)
                             .padding(.horizontal)
@@ -26,7 +26,7 @@ struct SettingsView: View {
                             }) {
                                 HStack {
                                     Label(
-                                        title: { Text("主题") },
+                                        title: { Text(NSLocalizedString("Theme", comment: "Theme")) },
                                         icon: { 
                                             Image(systemName: "paintbrush.fill")
                                                 .foregroundColor(Color(hex: "#FF7648"))
@@ -36,7 +36,7 @@ struct SettingsView: View {
                                     
                                     Spacer()
                                     
-                                    Text(settings.theme.displayName)
+                                    Text(NSLocalizedString(settings.theme.displayName, comment: "Theme name"))
                                         .font(.system(size: 16))
                                         .foregroundColor(.gray)
                                     
@@ -60,7 +60,7 @@ struct SettingsView: View {
                     
                     // 关于部分 - About section
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("关于")
+                        Text(NSLocalizedString("About", comment: "About section"))
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.black)
                             .padding(.horizontal)
@@ -71,7 +71,7 @@ struct SettingsView: View {
                             }) {
                                 HStack {
                                     Label(
-                                        title: { Text("关于大师快拍") },
+                                        title: { Text(NSLocalizedString("About ShotSmarts", comment: "About ShotSmarts")) },
                                         icon: { 
                                             Image(systemName: "info.circle")
                                                 .foregroundColor(Color(hex: "#FF7648"))
@@ -95,7 +95,7 @@ struct SettingsView: View {
                             
                             // 版本信息 - Version info
                             HStack {
-                                Text("版本")
+                                Text(NSLocalizedString("Version", comment: "Version"))
                                     .font(.system(size: 16))
                                     .foregroundColor(.black)
                                 
@@ -116,7 +116,7 @@ struct SettingsView: View {
                 .padding(.horizontal)
             }
             .background(Color(.systemGray6))
-            .navigationTitle("设置")
+            .navigationTitle(NSLocalizedString("Settings", comment: "Settings title"))
             .navigationBarTitleDisplayMode(.large)
         }
         .accentColor(Color(hex: "#FF7648"))
@@ -149,17 +149,17 @@ struct AboutView: View {
                     .padding(.top, 40)
                     
                     // 应用名称 - App name
-                    Text("大师快拍")
+                    Text(NSLocalizedString("ShotSmarts", comment: "App name"))
                         .font(.system(size: 28, weight: .bold))
                         .foregroundColor(.black)
                     
                     // 描述文本 - Description text
                     VStack(spacing: 16) {
-                        Text("大师快拍帮助摄影师快速计算最佳相机参数，让您在任何拍摄场景下都能获得理想效果。")
+                        Text(NSLocalizedString("ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario.", comment: "App description"))
                             .font(.system(size: 16))
                             .foregroundColor(.gray)
                         
-                        Text("只需输入拍摄条件，大师快拍就能为您推荐最适合的光圈、快门速度等参数设置。")
+                        Text(NSLocalizedString("Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot.", comment: "App description 2"))
                             .font(.system(size: 16))
                             .foregroundColor(.gray)
                     }
@@ -168,27 +168,27 @@ struct AboutView: View {
                     
                     // 功能列表 - Feature list
                     VStack(alignment: .leading, spacing: 16) {
-                        Text("主要功能")
+                        Text(NSLocalizedString("Main Features", comment: "Main Features"))
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.black)
                             .padding(.top)
                         
                         FeatureRow(
                             icon: "camera.metering.matrix",
-                            title: "智能推荐",
-                            description: "基于光线和场景的智能相机参数设置"
+                            title: NSLocalizedString("Smart Recommendations", comment: "Feature: Smart Recommendations"),
+                            description: NSLocalizedString("Intelligent camera parameter settings based on light and scene", comment: "Feature description")
                         )
                         
                         FeatureRow(
                             icon: "list.bullet",
-                            title: "拍摄记录",
-                            description: "保存并随时查看历史拍摄参数"
+                            title: NSLocalizedString("Shooting Records", comment: "Feature: Shooting Records"),
+                            description: NSLocalizedString("Save and view historical shooting parameters anytime", comment: "Feature description")
                         )
                         
                         FeatureRow(
                             icon: "wand.and.stars",
-                            title: "场景优化",
-                            description: "针对不同场景自动优化参数配置"
+                            title: NSLocalizedString("Scene Optimization", comment: "Feature: Scene Optimization"),
+                            description: NSLocalizedString("Automatically optimize parameter configurations for different scenes", comment: "Feature description")
                         )
                     }
                     .padding(.horizontal)
@@ -196,7 +196,7 @@ struct AboutView: View {
                     Spacer(minLength: 30)
                     
                     // 版权信息 - Copyright info
-                    Text("© 2025 大师快拍")
+                    Text(NSLocalizedString("© 2025 ShotSmarts", comment: "Copyright info"))
                         .font(.system(size: 14))
                         .foregroundColor(.gray)
                         .padding(.bottom)
@@ -204,11 +204,11 @@ struct AboutView: View {
                 .padding()
             }
             .background(Color(.systemGray6))
-            .navigationTitle("关于")
+            .navigationTitle(NSLocalizedString("About", comment: "About title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("完成") {
+                    Button(NSLocalizedString("Done", comment: "Done button")) {
                         dismiss()
                     }
                     .foregroundColor(Color(hex: "#FF7648"))

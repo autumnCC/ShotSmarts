@@ -16,7 +16,7 @@ struct HomeView: View {
             ScrollView {
                 VStack(spacing: 16) { // 缩短整体间距
                     // 顶部标题 - Top title
-                    Text("大师快拍")
+                    Text(NSLocalizedString("ShotSmarts", comment: "App name"))
                         .font(.system(size: 28, weight: .bold)) // 减小标题
                         .foregroundColor(.black)
                         .padding(.top, 10) // 减少顶部内边距
@@ -36,7 +36,7 @@ struct HomeView: View {
                                 resetParameters()
                             }
                         }) {
-                            Text("重置")
+                            Text(NSLocalizedString("Reset", comment: "Reset button"))
                                 .font(.system(size: 16, weight: .medium))
                                 .frame(minWidth: 0, maxWidth: .infinity)
                                 .padding(.vertical, 12) // 减少垂直内边距
@@ -49,7 +49,7 @@ struct HomeView: View {
                         Button(action: {
                             showingSaveDialog = true
                         }) {
-                            Text("保存")
+                            Text(NSLocalizedString("Save", comment: "Save button"))
                                 .font(.system(size: 16, weight: .medium))
                                 .frame(minWidth: 0, maxWidth: .infinity)
                                 .padding(.vertical, 12) // 减少垂直内边距
@@ -69,18 +69,18 @@ struct HomeView: View {
             .edgesIgnoringSafeArea(.bottom)
             
             // 保存对话框 - Save dialog
-            .alert("保存参数", isPresented: $showingSaveDialog) {
-                TextField("参数名称", text: $parameterName)
+            .alert(NSLocalizedString("Save Parameters", comment: "Save parameters dialog title"), isPresented: $showingSaveDialog) {
+                TextField(NSLocalizedString("Parameter Name", comment: "Parameter name field"), text: $parameterName)
                 
-                Button("取消", role: .cancel) {
+                Button(NSLocalizedString("Cancel", comment: "Cancel button"), role: .cancel) {
                     parameterName = ""
                 }
                 
-                Button("保存") {
+                Button(NSLocalizedString("Save", comment: "Save button")) {
                     saveParameters()
                 }
             } message: {
-                Text("为这组参数设置一个名称")
+                Text(NSLocalizedString("Enter a name for these parameters", comment: "Save dialog message"))
             }
         }
     }
@@ -109,13 +109,13 @@ struct ParameterInputCard: View {
         VStack(alignment: .leading, spacing: 16) { // 减少间距
             // 光线条件选择器 - Light condition selector
             VStack(alignment: .leading, spacing: 8) { // 减少间距
-                Text("光线条件")
+                Text(NSLocalizedString("Light Condition", comment: "Light condition section title"))
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.black)
                 
                 Picker("", selection: $parameters.lightCondition) {
                     ForEach(ShootingParameters.LightCondition.allCases) { condition in
-                        Text(LocalizedString(condition.rawValue, comment: "Light condition"))
+                        Text(NSLocalizedString(condition.rawValue, comment: "Light condition"))
                             .tag(condition)
                     }
                 }
@@ -160,13 +160,13 @@ struct ParameterInputCard: View {
             
             // 场景模式选择器 - Scene mode selector
             VStack(alignment: .leading, spacing: 8) { // 减少间距
-                Text("场景模式")
+                Text(NSLocalizedString("Scene Mode", comment: "Scene mode section title"))
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(.black)
                 
                 Picker("", selection: $parameters.sceneMode) {
                     ForEach(ShootingParameters.SceneMode.allCases) { mode in
-                        Text(LocalizedString(mode.rawValue, comment: "Scene mode"))
+                        Text(NSLocalizedString(mode.rawValue, comment: "Scene mode"))
                             .tag(mode)
                     }
                 }
@@ -212,7 +212,7 @@ struct ParameterResultDashboard: View {
             ], spacing: 12) { // 增加网格项之间的间距
                 // 光圈值 - Aperture value
                 ParameterIndicator(
-                    title: "光圈",
+                    title: NSLocalizedString("Aperture", comment: "Aperture label"),
                     value: parameters.formattedAperture,
                     icon: "camera.aperture",
                     color: Color(hex: "#FF7648") // 橙色
@@ -220,7 +220,7 @@ struct ParameterResultDashboard: View {
                 
                 // 快门速度 - Shutter speed
                 ParameterIndicator(
-                    title: "快门",
+                    title: NSLocalizedString("Shutter", comment: "Shutter label"),
                     value: parameters.formattedShutterSpeed,
                     icon: "timer",
                     color: Color(hex: "#FF7648") // 橙色
@@ -236,7 +236,7 @@ struct ParameterResultDashboard: View {
                 
                 // 曝光补偿 - Exposure compensation
                 ParameterIndicator(
-                    title: "曝光",
+                    title: NSLocalizedString("Exp. Comp.", comment: "Exposure compensation label"),
                     value: shortExposureValue(parameters.formattedExposureCompensation),
                     icon: "plusminus",
                     color: Color(hex: "#FF7648") // 橙色
@@ -255,11 +255,11 @@ struct ParameterResultDashboard: View {
                         .font(.system(size: 15))
                         .foregroundColor(Color(hex: "#FF7648")) // 橙色
                     
-                    Text("测光模式：")
+                    Text(NSLocalizedString("Metering Mode", comment: "Metering mode label") + ": ")
                         .font(.system(size: 13))
                         .foregroundColor(.gray)
                     
-                    Text(LocalizedString(parameters.meteringMode.rawValue, comment: "Metering mode"))
+                    Text(NSLocalizedString(parameters.meteringMode.rawValue, comment: "Metering mode"))
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.black)
                 }
@@ -272,7 +272,7 @@ struct ParameterResultDashboard: View {
                         .font(.system(size: 15))
                         .foregroundColor(Color(hex: "#FF7648")) // 橙色
                     
-                    Text(LocalizedString(parameters.sceneMode.rawValue, comment: "Scene mode"))
+                    Text(NSLocalizedString(parameters.sceneMode.rawValue, comment: "Scene mode"))
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.black)
                 }

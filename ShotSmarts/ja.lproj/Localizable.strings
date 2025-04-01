@@ -73,4 +73,31 @@
 
 /* About */
 "ShotSmarts helps photographers of all levels calculate the optimal camera settings for any shooting scenario." = "ShootSmartsは、あらゆるレベルの写真家がどんな撮影シナリオでも最適なカメラ設定を計算できるようサポートします。";
-"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "撮影条件を入力するだけで、ShootSmartsが完璧なショットのための理想的な絞り値、シャッタースピード、その他の設定を推奨します。"; 
+"Simply input your shooting conditions and let ShotSmarts recommend the ideal aperture, shutter speed, and other settings for the perfect shot." = "撮影条件を入力するだけで、ShootSmartsが完璧なショットのための理想的な絞り値、シャッタースピード、その他の設定を推奨します。";
+
+/* App name */
+"ShotSmarts" = "ショットスマート";
+
+/* Parameter summary */
+"Parameter configuration for %@ scene, under %@ light conditions." = "%@シーンの%@光条件下でのパラメータ設定です。";
+"Using aperture %@, shutter speed %@, ISO %d, with %@ metering, exposure compensation %@." = "絞り値%@、シャッタースピード%@、ISO感度%d、%@測光、露出補正%@を使用しています。";
+"These parameters will help you achieve balanced exposure and good imaging results." = "これらのパラメータは、バランスの取れた露出と優れた撮影結果を得るのに役立ちます。";
+
+/* Feature descriptions */
+"Main Features" = "主な機能";
+"Smart Recommendations" = "スマート推奨";
+"Intelligent camera parameter settings based on light and scene" = "光とシーンに基づくインテリジェントなカメラパラメータ設定";
+"Shooting Records" = "撮影記録";
+"Save and view historical shooting parameters anytime" = "いつでも過去の撮影パラメータを保存して表示できます";
+"Scene Optimization" = "シーン最適化";
+"Automatically optimize parameter configurations for different scenes" = "異なるシーンに対してパラメータ構成を自動的に最適化";
+"© 2025 ShotSmarts" = "© 2025 ショットスマート";
+
+/* History View */
+"Total: %d records" = "合計: %d 件";
+"Sorted by time, newest first" = "時間順、新しい順";
+"Your saved shooting parameters will appear here\nTap the Save button on the home screen to add parameters" = "保存した撮影パラメータがここに表示されます\nホーム画面の保存ボタンをタップしてパラメータを追加";
+"Camera Parameters" = "カメラパラメータ";
+"Shooting Conditions" = "撮影条件";
+"Parameter Summary" = "パラメータ概要";
+"Parameter Details" = "パラメータ詳細"; 
