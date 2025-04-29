@@ -100,4 +100,66 @@
 "Camera Parameters" = "Camera Parameters";
 "Shooting Conditions" = "Shooting Conditions";
 "Parameter Summary" = "Parameter Summary";
-"Parameter Details" = "Parameter Details"; 
+"Parameter Details" = "Parameter Details";
+
+/* Focal Length Calculator */
+"焦距等效换算" = "Focal Length Conversion";
+"等效焦距换算" = "Equivalent Focal Length";
+"计算不同传感器尺寸下的等效焦距" = "Calculate equivalent focal lengths for different sensor sizes";
+"Equivalent Focal Length" = "Equivalent Focal Length";
+"Discover" = "Discover";
+"毫米" = "mm";
+
+/* Depth of Field Calculator */
+"景深计算" = "Depth of Field Calculator";
+"根据传感器类型、焦距、光圈和对焦距离计算景深" = "Calculate depth of field based on sensor type, focal length, aperture and focus distance";
+"Depth of Field Calculator" = "Depth of Field Calculator";
+"0m" = "0m";
+"10m" = "10m";
+"%d mm" = "%d mm";
+"光圈" = "Aperture";
+"对焦距离" = "Focus Distance";
+"近点距离" = "Near Distance";
+"远点距离" = "Far Distance";
+"可视化范围" = "Visual Range";
+"传感器类型" = "Sensor Type";
+"全画幅" = "Full Frame";
+"中画幅(完全)" = "Medium Format (Full)";
+"中画幅4433" = "Medium Format 44×33";
+"APS-C" = "APS-C";
+"M4/3" = "Micro Four Thirds";
+"1英寸" = "1-inch";
+"焦距" = "Focal Length";
+"原始焦距" = "Original Focal Length";
+"等效焦距" = "Equivalent Focal Length";
+"%@传感器上的%d毫米镜头，相当于全画幅上的%d毫米" = "A %d mm lens on %@ sensor is equivalent to %d mm on full frame";
+"景深" = "Depth of Field";
+"米" = "m";
+"0米" = "0m";
+"10米" = "10m";
+"%d 毫米" = "%d mm";
+
+/* Numbers */
+"10" = "10";
+"205" = "205";
+"400" = "400";
+"0" = "0";
+"5" = "5";
+
+/* Format strings */
+"v%@" = "v%@";
+"f/%@" = "f/%@";
+"×%@" = "×%@";
+
+/* Hyperfocal Distance Calculator */
+"超焦距计算" = "Hyperfocal Distance Calculator";
+"超焦距" = "Hyperfocal Distance";
+"根据传感器类型、焦距和光圈计算超焦距" = "Calculate hyperfocal distance based on sensor type, focal length and aperture";
+"对焦于超焦距时，景深范围" = "Depth of field range when focusing at hyperfocal distance";
+"无穷远" = "Infinity";
+"实用技巧" = "Practical Tips";
+"在风景摄影中，将焦点设置在超焦距上可以使从前景到无穷远的景物都保持足够清晰。" = "In landscape photography, focusing at the hyperfocal distance keeps everything from the foreground to infinity acceptably sharp.";
+"街头摄影常用超焦距技巧配合小光圈（如f/8或更小）快速拍摄而无需每次对焦。" = "Street photographers often use hyperfocal distance with smaller apertures (like f/8 or smaller) for quick shooting without refocusing.";
+"20米" = "20m";
+"设置" = "Settings";
+"∞" = "∞";

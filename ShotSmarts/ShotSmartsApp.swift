@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ObjectiveC
+import os.log
 
 // 调试本地化函数 - Debug localization function
 func debugLocalization() {
@@ -52,6 +53,23 @@ func ensureCorrectLanguageSettings() {
     print("History -> \(NSLocalizedString("History", comment: "History tab"))")
 }
 
+// 解决CA Event launch measurements错误
+func suppressCAPerfLogging() {
+    // 禁用CoreAnimation性能日志
+    if ProcessInfo.processInfo.environment["CA_DEBUG_DISABLE_PERFORMANCE_LOGGING"] == nil {
+        setenv("CA_DEBUG_DISABLE_PERFORMANCE_LOGGING", "1", 1)
+    }
+    
+    if #available(iOS 14.0, *) {
+        // 使用更新的Logger API
+        let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "com.shotsmarts", category: "AppLaunch")
+        logger.info("已禁用CA性能日志")
+    } else {
+        // 旧版日志
+        os_log("已禁用CA性能日志", type: .info)
+    }
+}
+
 // 环境键，用于传递语言刷新状态 - Environment key for language refresh
 private struct RefreshEnvironmentKey: EnvironmentKey {
     static let defaultValue = 0
@@ -75,6 +93,9 @@ struct ShotSmartsApp: App {
     
     // 当系统语言变化时，刷新UI - Refresh UI when system language changes
     init() {
+        // 禁用CA性能日志，解决launch measurements错误
+        suppressCAPerfLogging()
+        
         // 确保应用启动时使用系统语言 - Ensure system language is used when app launches
         // 如果之前有强制设置的语言，移除它 - Remove any forced language settings if they exist
         if UserDefaults.standard.object(forKey: "AppleLanguages") != nil {

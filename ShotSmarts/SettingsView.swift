@@ -7,38 +7,35 @@ struct SettingsView: View {
     
     // 状态变量 - State variables
     @State private var showingAbout = false
+    @State private var showingFocalLengthCalculator = false
+    @State private var showingDepthOfFieldCalculator = false
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 16) {
-                    // 外观部分 - Appearance section
+                    // 发现部分 - Discover section
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(NSLocalizedString("Appearance", comment: "Appearance settings"))
+                        Text(NSLocalizedString("Discover", comment: "Discover section"))
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(.black)
                             .padding(.horizontal)
                         
                         VStack(spacing: 0) {
-                            // 主题选择 - Theme selection
                             Button(action: {
-                                // 主题切换逻辑保持不变
+                                showingFocalLengthCalculator = true
                             }) {
                                 HStack {
                                     Label(
-                                        title: { Text(NSLocalizedString("Theme", comment: "Theme")) },
+                                        title: { Text(NSLocalizedString("Equivalent Focal Length", comment: "Focal Length Calculator")) },
                                         icon: { 
-                                            Image(systemName: "paintbrush.fill")
+                                            Image(systemName: "camera.aperture")
                                                 .foregroundColor(Color(hex: "#FF7648"))
                                         }
                                     )
                                     .font(.system(size: 16))
                                     
                                     Spacer()
-                                    
-                                    Text(NSLocalizedString(settings.theme.displayName, comment: "Theme name"))
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.gray)
                                     
                                     Image(systemName: "chevron.right")
                                         .font(.system(size: 14))
@@ -51,6 +48,30 @@ struct SettingsView: View {
                             
                             Divider()
                                 .padding(.horizontal)
+                            
+                            Button(action: {
+                                showingDepthOfFieldCalculator = true
+                            }) {
+                                HStack {
+                                    Label(
+                                        title: { Text(NSLocalizedString("Depth of Field Calculator", comment: "Depth of Field Calculator")) },
+                                        icon: { 
+                                            Image(systemName: "camera.metering.center.weighted")
+                                                .foregroundColor(Color(hex: "#FF7648"))
+                                        }
+                                    )
+                                    .font(.system(size: 16))
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.gray)
+                                }
+                                .padding()
+                                .background(Color.white)
+                            }
+                            .foregroundColor(.black)
                         }
                         .background(Color.white)
                         .cornerRadius(16)
@@ -122,6 +143,12 @@ struct SettingsView: View {
         .accentColor(Color(hex: "#FF7648"))
         .sheet(isPresented: $showingAbout) {
             AboutView()
+        }
+        .sheet(isPresented: $showingFocalLengthCalculator) {
+            FocalLengthCalculatorView()
+        }
+        .sheet(isPresented: $showingDepthOfFieldCalculator) {
+            DepthOfFieldCalculatorView()
         }
     }
 }
@@ -252,4 +279,4 @@ struct FeatureRow: View {
 
 #Preview {
     SettingsView()
-} 
+}
